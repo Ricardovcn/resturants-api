@@ -34,6 +34,15 @@ RSpec.describe Api::V1::MenusController, type: :controller do
   end
 
   describe "POST /create" do
+    context "one of the required parameters is missing" do
+      it 'returns a 400 code and an error message' do
+        post :create, params: { description: "description"}
+        
+        expect(response).to have_http_status :bad_request
+        expect(JSON.parse(response.body)["message"]).to include("Required param missing")
+      end
+    end
+
     context "gets no parameter" do
       it 'returns a 400 code and an error message' do
         post :create, params: {}
