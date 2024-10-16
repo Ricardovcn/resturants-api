@@ -1,6 +1,6 @@
 class Api::V1::RestaurantsController < ApplicationController
   
-  before_action :set_restaurant, only: [:show, :update, :destroy]
+  before_action :set_restaurant, only: [:show, :update, :destroy, :menus]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
 
@@ -38,6 +38,10 @@ class Api::V1::RestaurantsController < ApplicationController
     @restaurant.destroy
 
     head :no_content
+  end
+
+  def menus
+    render json: @restaurant.menus
   end
 
   private

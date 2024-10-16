@@ -8,6 +8,10 @@ Rails.application.routes.draw do
       scope :menus do
         get "/:id/menu_items", to: "menus#menu_items"
       end
+
+      scope :restaurants do
+        get "/:id/menus", to: "restaurants#menus"
+      end
     end
   end
 end
