@@ -1,11 +1,23 @@
-puts "Seeding Menus..."
+puts "Seeding Restaurants..."
 
-names = [
-  { name: "Drinks Menu" },
-  { name: "Fast Food Menu" },
+restaurant_names = [
+  { name: "Restaurant Name 1" },
+  { name: "Restaurant Name 2" },
 ]
 
-names.each do |menu_name|
+restaurant_names.each do |menu_name|
+  Restaurant.find_or_create_by(menu_name)
+  puts "Created restaurant: #{menu_name}"
+end
+
+puts "Seeding Menus..."
+
+menu_names = [
+  { name: "Drinks Menu", restaurant_id: 1 },
+  { name: "Fast Food Menu", restaurant_id: 1 },
+]
+
+menu_names.each do |menu_name|
   Menu.find_or_create_by(menu_name)
   puts "Created menu: #{menu_name}"
 end
