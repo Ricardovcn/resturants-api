@@ -105,9 +105,11 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
 
     context "gets a valid ID as parameter" do
       it 'returns a 204 code' do
+        table_size_after_delete = Restaurant.all.size - 1
         delete :destroy, params: { id: 2}        
 
         expect(response).to have_http_status :no_content
+        expect(Restaurant.all.size).to eql(table_size_after_delete)
       end
     end
   end

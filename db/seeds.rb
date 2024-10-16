@@ -1,51 +1,32 @@
 puts "Seeding Restaurants..."
 
-restaurant_names = [
-  { name: "Restaurant Name 1" },
-  { name: "Restaurant Name 2" },
-]
-
-restaurant_names.each do |menu_name|
-  Restaurant.find_or_create_by(menu_name)
-  puts "Created restaurant: #{menu_name}"
-end
+fancy_restaurant = Restaurant.find_or_create_by({ name: "Fancy One" })
+plain_restaurant = Restaurant.find_or_create_by({ name: "Plain One" })
 
 puts "Seeding Menus..."
 
-menu_names = [
-  { name: "Drinks Menu", restaurant_id: 1 },
-  { name: "Fast Food Menu", restaurant_id: 1 },
-]
-
-menu_names.each do |menu_name|
-  Menu.find_or_create_by(menu_name)
-  puts "Created menu: #{menu_name}"
-end
-
+drinks_menu = Menu.find_or_create_by({ name: "Drinks Menu", restaurant_id: plain_restaurant.id })
+fast_food_menu = Menu.find_or_create_by({ name: "Fast Food Menu", restaurant_id: plain_restaurant.id })
+  
 puts "Seeding Menus items..."
 
-drink_names = [
-  { name: "Water"},
-  { name: "Soda"},
-  { name: "Mojito"}
-]
+water = MenuItem.find_or_create_by({ name: "Water"})
+soda = MenuItem.find_or_create_by({ name: "Soda"})
+mojito = MenuItem.find_or_create_by({ name: "Mojito"})
 
-fast_food_names = [
-  { name: "Fries"},
-  { name: "Hamburguer"},
-  { name: "Pizza"}
-]
+fries = MenuItem.find_or_create_by({ name: "Fries"})
+hamburguer = MenuItem.find_or_create_by({ name: "Hamburguer"})
+pizza = MenuItem.find_or_create_by({ name: "Pizza"})
 
-drink_names.each do |drink|
-  menu_item = MenuItem.find_or_create_by(drink)
-  puts "Created menu item: #{drink}"
-  MenuItemMenu.find_or_create_by({menu_id: 2, menu_item_id: menu_item.id})
-end
+puts "Seedings Associations"
 
-fast_food_names.each do |fast_food|
-  menu_item =MenuItem.find_or_create_by(fast_food)
-  puts "Created menu item: #{fast_food}"
-  MenuItemMenu.find_or_create_by({menu_id: 2, menu_item_id: menu_item.id})
-end
+MenuItemMenu.find_or_create_by({menu_id: drinks_menu.id, menu_item_id: water.id})
+MenuItemMenu.find_or_create_by({menu_id: drinks_menu.id, menu_item_id: soda.id})
+MenuItemMenu.find_or_create_by({menu_id: drinks_menu.id, menu_item_id: mojito.id})
+
+MenuItemMenu.find_or_create_by({menu_id: fast_food_menu.id, menu_item_id: fries.id})
+MenuItemMenu.find_or_create_by({menu_id: fast_food_menu.id, menu_item_id: hamburguer.id})
+MenuItemMenu.find_or_create_by({menu_id: fast_food_menu.id, menu_item_id: pizza.id})
+
 
 puts "Seeding completed!"
