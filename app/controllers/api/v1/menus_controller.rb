@@ -1,5 +1,5 @@
 class Api::V1::MenusController < ApplicationController
-  before_action :set_menu, only: [:show, :update, :destroy]
+  before_action :set_menu, only: [:show, :update, :destroy, :menu_items]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
 
@@ -36,6 +36,10 @@ class Api::V1::MenusController < ApplicationController
   def destroy
     @menu.destroy
     head :no_content
+  end
+
+  def menu_items
+    render json: @menu.menu_items
   end
 
   private 

@@ -102,4 +102,25 @@ RSpec.describe Api::V1::MenusController, type: :controller do
       end
     end
   end
+
+  describe "GET /menu_items" do
+    context "gets an invalid menu ID as parameter" do
+      it 'returns a 400 code and an error message' do
+        get :menu_items, params: { id: 99}
+        
+        expect(response).to have_http_status :not_found
+        expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
+      end
+    end
+
+    context "gets a valid menu ID as parameter" do
+      it 'returns a 200 code and an array of menu items' do
+        get :menu_items, params: { id: 2}        
+
+        expect(response).to have_http_status :ok
+        expect(JSON.parse(response.body)).to be_an_instance_of(Array)
+        expect(JSON.parse(response.body).size).to eql(Menu.find_by(id: 2).menu_items.size)
+      end
+    end
+  end
 end
