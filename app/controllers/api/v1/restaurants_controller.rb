@@ -35,7 +35,6 @@ class Api::V1::RestaurantsController < ApplicationController
   end
 
   def destroy
-    MenuItemMenu.where(menu_id: @restaurant.menus.pluck(:id)).destroy_all
     @restaurant.destroy
 
     head :no_content

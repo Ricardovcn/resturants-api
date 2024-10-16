@@ -34,7 +34,6 @@ class Api::V1::MenuItemsController < ApplicationController
   end
 
   def destroy
-    MenuItemMenu.where(menu_item_id: @menu_item.id).destroy_all
     @menu_item.destroy
 
     head :no_content
