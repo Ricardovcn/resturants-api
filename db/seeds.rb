@@ -25,25 +25,27 @@ end
 puts "Seeding Menus items..."
 
 drink_names = [
-  { name: "Water", menu_id: 1 },
-  { name: "Soda", menu_id: 1 },
-  { name: "Mojito", menu_id: 1 }
+  { name: "Water"},
+  { name: "Soda"},
+  { name: "Mojito"}
 ]
 
 fast_food_names = [
-  { name: "Fries", menu_id: 2 },
-  { name: "Hamburguer", menu_id: 2 },
-  { name: "Pizza", menu_id: 2 }
+  { name: "Fries"},
+  { name: "Hamburguer"},
+  { name: "Pizza"}
 ]
 
 drink_names.each do |drink|
-  MenuItem.find_or_create_by(drink)
+  menu_item = MenuItem.find_or_create_by(drink)
   puts "Created menu item: #{drink}"
+  MenuItemMenu.find_or_create_by({menu_id: 2, menu_item_id: menu_item.id})
 end
 
 fast_food_names.each do |fast_food|
-  MenuItem.find_or_create_by(fast_food)
+  menu_item =MenuItem.find_or_create_by(fast_food)
   puts "Created menu item: #{fast_food}"
+  MenuItemMenu.find_or_create_by({menu_id: 2, menu_item_id: menu_item.id})
 end
 
 puts "Seeding completed!"
