@@ -4,7 +4,8 @@ class Api::V1::MenusController < ApplicationController
   before_action :required_params, only: :create
 
   REQUIRED_PARAMS = [
-    "name"
+    "name",
+    "restaurant_id"
   ].freeze
   
   def index
@@ -55,7 +56,7 @@ class Api::V1::MenusController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:name, :description, :is_acive)
+    params.permit(:name, :description, :is_acive, :restaurant_id)
   end
 
   def set_menu
