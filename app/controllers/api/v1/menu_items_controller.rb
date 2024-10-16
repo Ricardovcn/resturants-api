@@ -53,7 +53,17 @@ class Api::V1::MenuItemsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:name, :menu_id, :price_in_cents)
+    params.permit(
+      :name, 
+      :menu_id, 
+      :price_in_cents,
+      :category,
+      :description,
+      :is_available,
+      :calories,
+      ingredients: [],
+      allergens: []
+    )
   end
 
   def set_menu_item
