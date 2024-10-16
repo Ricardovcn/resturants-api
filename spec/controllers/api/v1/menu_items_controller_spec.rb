@@ -45,7 +45,7 @@ RSpec.describe Api::V1::MenuItemsController, type: :controller do
 
     context "one of the required parameters is missing" do
       it 'returns a 400 code and an error message' do
-        post :create, params: { name: menu_item_name}
+        post :create, params: { description: "description"}
         
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to include("Required param missing")
@@ -70,15 +70,6 @@ RSpec.describe Api::V1::MenuItemsController, type: :controller do
 
         expect(response).to have_http_status :not_found
         expect(JSON.parse(response.body)["message"]).to eql("Invalid menu item id!")
-      end
-    end
-
-    context "gets an invalid menu ID as parameter" do
-      it 'returns a 404 code and an error message' do
-        put :update, params: { id: 1, name: menu_item_name, menu_id: 20}
-
-        expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
       end
     end
 

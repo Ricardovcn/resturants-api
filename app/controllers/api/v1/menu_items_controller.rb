@@ -1,12 +1,10 @@
 class Api::V1::MenuItemsController < ApplicationController
   before_action :set_menu_item, only: [:show, :update, :destroy]
-  before_action :set_menu, only: [:update, :create]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
 
   REQUIRED_PARAMS = [
-    "name",
-    "menu_id"
+    "name"
   ].freeze
   
   def index
@@ -55,7 +53,6 @@ class Api::V1::MenuItemsController < ApplicationController
   def permitted_params
     params.permit(
       :name, 
-      :menu_id, 
       :price_in_cents,
       :category,
       :description,
@@ -69,12 +66,5 @@ class Api::V1::MenuItemsController < ApplicationController
   def set_menu_item
     @menu_item = MenuItem.find_by_id(params['id'])
     render_error("Invalid menu item id!", :not_found) if @menu_item.nil?
-  end
-
-  def set_menu
-    return unless params['menu_id'].present?
-
-    @menu = Menu.find_by_id(params['menu_id'])
-    render_error("Invalid menu id!", :not_found) if @menu.nil?
   end
 end
