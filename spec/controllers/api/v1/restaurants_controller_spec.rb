@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::RestaurantsController, type: :controller do
   let(:new_restaurant_name) { "New Restaurant Name" }
+  let(:too_big_name) { SecureRandom.hex(51) } 
+  let(:too_big_description) { SecureRandom.hex(251) } 
 
   describe "GET /index" do
     it 'returns a 200 code and an array of restaurants' do
@@ -50,6 +52,46 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
         
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to eql("No restaurant attributes was passed as parameters.")
+      end
+    end
+
+    context "gets a invalid name" do
+      it 'returns a 200 code and the created restaurant' do
+        post :create, params: { name: too_big_name, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Name is too long")
+      end
+    end
+
+    context "gets a invalid description" do
+      it 'returns a 200 code and the created restaurant' do
+        post :create, params: { name: new_restaurant_name, description: too_big_description, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Description is too long")
+      end
+    end
+
+    context "gets an invalid email" do
+      it 'returns a 200 code and the created restaurant' do
+        post :create, params: { name: new_restaurant_name, restaurant_id: 1, email: "invalid"}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Email is invalid")
+      end
+    end
+
+    context "gets an invalid phone number" do
+      it 'returns a 200 code and the created restaurant' do
+        post :create, params: { name: new_restaurant_name, restaurant_id: 1, phone_number: "invalid"}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Phone number must be a valid phone number")
       end
     end
 
