@@ -6,7 +6,7 @@ class Restaurant < ApplicationRecord
   validates :name, presence: true, length: { maximum: 100 }
   validates :description, length: { maximum: 500 }, allow_blank: true
   validates :phone_number, format: { with: /\A\+?[0-9\s\-]+\z/, message: "must be a valid phone number", allow_blank: true }
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_nil: true
 
   private
 
