@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::MenuItemsController, type: :controller do
   let(:menu_item_name) { "Milkshake" }
+  let(:duplicated_name) { "Mojito" }
 
   describe "GET /index" do
     it 'returns a 200 code and an array of menu items' do
@@ -49,6 +50,18 @@ RSpec.describe Api::V1::MenuItemsController, type: :controller do
         
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to include("Required param missing")
+      end
+    end
+
+    context "gets a name that is already present in the database" do
+      it 'returns a 400 code and an error message' do
+        post :create, params: { name: "Mojito"}
+        
+        expect(response).to have_http_status :conflict
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to eql("A MenuItem with this name already exists.")
+        expect(json_response["existing_object"]).to be_present
+        expect(json_response["existing_object"]["id"]).to be_present
       end
     end
 

@@ -16,6 +16,10 @@ class Api::V1::MenuItemsController < ApplicationController
   end
 
   def create
+    existing_object = MenuItem.find_by_name(permitted_params["name"])
+    
+    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
+
     @menu_item = MenuItem.new(permitted_params)
         
     if @menu_item.save
