@@ -1,4 +1,4 @@
-class Api::V1::MenuItemMenusController < ApplicationController
+class Api::V1::Restaurants::MenuItemMenusController < ApplicationController
     before_action :required_params, only: [:create, :destroy]
     before_action :set_menu_item_menu  
 
