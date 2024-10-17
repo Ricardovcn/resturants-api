@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Api::V1::MenuItemsController, type: :controller do
   let(:menu_item_name) { "Milkshake" }
   let(:duplicated_name) { "Mojito" }
+  let(:too_big_name) { SecureRandom.hex(51) } 
+  let(:too_big_description) { SecureRandom.hex(251) } 
 
   describe "GET /index" do
     it 'returns a 200 code and an array of menu items' do
@@ -63,6 +65,56 @@ RSpec.describe Api::V1::MenuItemsController, type: :controller do
         expect(json_response["message"]).to eql("A MenuItem with this name already exists.")
         expect(json_response["existing_object"]).to be_present
         expect(json_response["existing_object"]["id"]).to be_present
+      end
+    end
+
+    context "gets a invalid name" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: too_big_name}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Name is too long")
+      end
+    end
+
+    context "gets a invalid description" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: menu_item_name, description: too_big_description}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Description is too long")
+      end
+    end
+
+    context "gets invalid calories" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: menu_item_name, calories: -1 }
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Calories must be greater than or equal to 0")
+      end
+    end
+
+    context "gets invalid ingredients" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: menu_item_name, ingredients: [too_big_name, "ingredient2"] }
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Ingredients must be an array of strings with a maximum length of 100 characters")
+      end
+    end
+
+    context "gets invalid allergens" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: menu_item_name, allergens: [too_big_name, "allergen2"] }
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Allergens must be an array of strings with a maximum length of 100 characters")
       end
     end
 
