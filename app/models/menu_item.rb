@@ -12,8 +12,17 @@ class MenuItem < ApplicationRecord
   validate :validate_ingredients
   validate :validate_allergens
   
-  def price_in_dolar
-    self.price_in_cents / 100.0
+  
+  def price=(value)
+    if value.present? && value.is_a?(Numeric) && value >= 0
+      self.price_in_cents = (BigDecimal(value.to_s) * 100).round
+    else
+      raise ArgumentError, "Invalid price value"
+    end
+  end
+
+  def price
+    price_in_cents.to_f / 100
   end
 
   private 
