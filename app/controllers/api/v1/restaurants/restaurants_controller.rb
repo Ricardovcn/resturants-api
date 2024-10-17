@@ -13,7 +13,7 @@ class Api::V1::Restaurants::RestaurantsController < ApplicationController
   end
 
   def show
-    render json: @restaurant
+    render json: @restaurant, include: :menus
   end
 
   def create

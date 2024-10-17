@@ -14,7 +14,7 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   end
 
   def show
-    render json: @menu
+    render json: @menu, include: :menu_items
   end
 
   def create
