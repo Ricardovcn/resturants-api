@@ -1,4 +1,4 @@
-class Api::V1::RestaurantsController < ApplicationController
+class Api::V1::Restaurants::RestaurantsController < ApplicationController
   
   before_action :set_restaurant, only: [:show, :update, :destroy, :menus]
   before_action :validate_empty_body, only: [:create, :update]
