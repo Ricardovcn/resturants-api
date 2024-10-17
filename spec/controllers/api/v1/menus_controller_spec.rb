@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::MenusController, type: :controller do
   let(:new_menu_name) { "New Menu Name" }
+  let(:too_big_name) { SecureRandom.hex(51) } 
+  let(:too_big_description) { SecureRandom.hex(251) } 
 
   describe "GET /index" do
     it 'returns a 200 code and an array of menus' do
@@ -50,6 +52,26 @@ RSpec.describe Api::V1::MenusController, type: :controller do
         
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to eql("No menu attributes was passed as parameters.")
+      end
+    end
+
+    context "gets a invalid name" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: too_big_name, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Name is too long")
+      end
+    end
+
+    context "gets a invalid description" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: new_menu_name, description: too_big_description, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Description is too long")
       end
     end
 
