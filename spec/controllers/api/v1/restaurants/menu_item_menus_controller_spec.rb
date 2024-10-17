@@ -4,7 +4,7 @@ RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller 
   describe "POST /create" do
     context "gets valid parameters" do
       it 'returns a 200 code and the created menu_item_menus' do
-        post :create, params: { restaurant_id: 2, menu_id: 1, menu_item_id: 2 }
+        post :create, params: { restaurant_id: 2, menu_id: 1, menu_item_id: 6 }
 
         expect(response).to have_http_status :ok
         json_response = JSON.parse(response.body)
