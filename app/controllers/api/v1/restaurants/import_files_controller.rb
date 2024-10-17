@@ -9,11 +9,7 @@ class Api::V1::Restaurants::ImportFilesController < ApplicationController
 
   def import_json
     json_data = JSON.parse(@file.read)
-    errors = ::Restaurants::ImportService.new(json_data).serialize_and_persist
-    
-    return head :no_content if errors.blank?
-
-    render_error("Failed to import file.", :unprocessable_entity, { errors: errors } )
+    render json: ::Restaurants::ImportService.new(json_data).serialize_and_persist
   rescue JSON::ParserError
     render_error("Invalid JSON file.", :unprocessable_entity)
   end
