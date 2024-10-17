@@ -6,10 +6,6 @@ class Api::V1::Restaurants::MenuItemMenusController < ApplicationController
       "menu_id",
       "menu_item_id"
     ].freeze
-    
-    def index
-      render json: MenuItemMenu.all
-    end
   
     def create
       @menu_item_menu = MenuItemMenu.new(permitted_params)

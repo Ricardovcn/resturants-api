@@ -1,17 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller do
-  describe "GET /index" do
-    it 'returns a 200 code and an array of menu_item_menus' do            
-      get :index, params: { restaurant_id: 2, menu_id: 1}
-
-      expect(response).to have_http_status :ok
-      json_response = JSON.parse(response.body)
-      expect(json_response).to be_an_instance_of(Array)
-      expect(json_response.size).to eql(MenuItemMenu.all.size)
-    end
-  end
-
   describe "POST /create" do
     context "gets valid parameters" do
       it 'returns a 200 code and the created menu_item_menus' do
