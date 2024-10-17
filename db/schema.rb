@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_16_171437) do
+ActiveRecord::Schema.define(version: 2024_10_17_101829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 2024_10_16_171437) do
     t.boolean "is_available", default: true
     t.integer "calories"
     t.string "allergens", default: [], array: true
+    t.index ["name"], name: "index_menu_items_on_name", unique: true
   end
 
   create_table "menus", force: :cascade do |t|
