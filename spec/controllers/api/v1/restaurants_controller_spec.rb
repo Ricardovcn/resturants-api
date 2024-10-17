@@ -56,8 +56,8 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
     end
 
     context "gets a invalid name" do
-      it 'returns a 200 code and the created restaurant' do
-        post :create, params: { name: too_big_name, restaurant_id: 1}
+      it 'returns a 409 code an error message' do
+        post :create, params: { name: too_big_name}
 
         expect(response).to have_http_status :unprocessable_entity
         json_response = JSON.parse(response.body)
@@ -66,8 +66,8 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
     end
 
     context "gets a invalid description" do
-      it 'returns a 200 code and the created restaurant' do
-        post :create, params: { name: new_restaurant_name, description: too_big_description, restaurant_id: 1}
+      it 'returns a 409 code and an error message' do
+        post :create, params: { name: new_restaurant_name, description: too_big_description}
 
         expect(response).to have_http_status :unprocessable_entity
         json_response = JSON.parse(response.body)
