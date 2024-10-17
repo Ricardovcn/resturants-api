@@ -5,7 +5,7 @@ class MenuItem < ApplicationRecord
   before_destroy :remove_menu_item_associations
 
   validates :price_in_cents, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
-  validates :name, uniqueness: true, length: { maximum: 100 }
+  validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :description, length: { maximum: 500 }, allow_blank: true
   validates :calories, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
