@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_17_101829) do
+ActiveRecord::Schema.define(version: 2024_10_17_160145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2024_10_17_101829) do
     t.bigint "menu_item_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["menu_id", "menu_item_id"], name: "index_menu_item_menus_on_menu_id_and_menu_item_id", unique: true
     t.index ["menu_id"], name: "index_menu_item_menus_on_menu_id"
     t.index ["menu_item_id"], name: "index_menu_item_menus_on_menu_item_id"
   end
