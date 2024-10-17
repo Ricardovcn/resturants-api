@@ -22,7 +22,7 @@ class Api::V1::RestaurantsController < ApplicationController
     if @restaurant.save
       render json: @restaurant
     else
-      render json: @restaurant.errors, status: :unprocessable_entity
+      render_error(@restaurant.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 
@@ -30,7 +30,7 @@ class Api::V1::RestaurantsController < ApplicationController
     if @restaurant.update(permitted_params)
       render json: @restaurant
     else
-      render json: @restaurant.errors, status: :unprocessable_entity
+      render_error(@restaurant.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 

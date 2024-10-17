@@ -25,7 +25,7 @@ class Api::V1::MenuItemsController < ApplicationController
     if @menu_item.save
       render json: @menu_item
     else
-      render json: @menu_item.errors, status: :unprocessable_entity
+      render_error(@menu_item.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 
@@ -33,7 +33,7 @@ class Api::V1::MenuItemsController < ApplicationController
     if @menu_item.update(permitted_params)
       render json: @menu_item
     else
-      render json: @menu_item.errors, status: :unprocessable_entity
+      render_error(@menu_item.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 

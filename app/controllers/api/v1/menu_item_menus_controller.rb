@@ -17,7 +17,7 @@ class Api::V1::MenuItemMenusController < ApplicationController
       if @menu_item_menu.save
         render json: @menu_item_menu
       else
-        render json: @menu_item_menu.errors, status: :unprocessable_entity
+        render_error(@menu_item_menu.errors.full_messages.join(", "), :unprocessable_entity)
       end
     end
   
