@@ -6,8 +6,9 @@ RSpec.describe Api::V1::MenuItemMenusController, type: :controller do
       get :index
 
       expect(response).to have_http_status :ok
-      expect(JSON.parse(response.body)).to be_an_instance_of(Array)
-      expect(JSON.parse(response.body).size).to eql(MenuItemMenu.all.size)
+      json_response = JSON.parse(response.body)
+      expect(json_response).to be_an_instance_of(Array)
+      expect(json_response.size).to eql(MenuItemMenu.all.size)
     end
   end
 
@@ -26,8 +27,9 @@ RSpec.describe Api::V1::MenuItemMenusController, type: :controller do
         post :create, params: { menu_id: 1, menu_item_id: 1}
 
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)["menu_id"]).to be_present
-        expect(JSON.parse(response.body)["menu_item_id"]).to be_present
+        json_response = JSON.parse(response.body)
+        expect(json_response["menu_id"]).to be_present
+        expect(json_response["menu_item_id"]).to be_present
       end
     end
   end

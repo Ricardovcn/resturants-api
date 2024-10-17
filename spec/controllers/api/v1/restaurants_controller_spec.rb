@@ -8,8 +8,9 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
       get :index
 
       expect(response).to have_http_status :ok
-      expect(JSON.parse(response.body)).to be_an_instance_of(Array)
-      expect(JSON.parse(response.body).size).to eql(Restaurant.all.size)
+      json_response = JSON.parse(response.body)
+      expect(json_response).to be_an_instance_of(Array)
+      expect(json_response.size).to eql(Restaurant.all.size)
     end
   end
 
@@ -57,8 +58,9 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
         post :create, params: { name: "Restaurant Name 3", restaurant_id: 1}
 
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)["id"]).to be_present
-        expect(JSON.parse(response.body)["name"]).to be_present
+        json_response = JSON.parse(response.body)
+        expect(json_response["id"]).to be_present
+        expect(json_response["name"]).to be_present
       end
     end
   end
@@ -87,8 +89,9 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
         put :update, params: { id: 2, name: new_restaurant_name}
         
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)["id"]).to be(2)
-        expect(JSON.parse(response.body)["name"]).to eql(new_restaurant_name)
+        json_response = JSON.parse(response.body)
+        expect(json_response["id"]).to be(2)
+        expect(json_response["name"]).to eql(new_restaurant_name)
       end
     end
   end
@@ -129,8 +132,9 @@ RSpec.describe Api::V1::RestaurantsController, type: :controller do
         get :menus, params: { id: 2}        
 
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)).to be_an_instance_of(Array)
-        expect(JSON.parse(response.body).size).to eql(Restaurant.find_by(id: 2).menus.size)
+        json_response = JSON.parse(response.body)
+        expect(json_response).to be_an_instance_of(Array)
+        expect(json_response.size).to eql(Restaurant.find_by(id: 2).menus.size)
       end
     end
   end
