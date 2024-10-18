@@ -7,33 +7,34 @@ module Restaurants
     def initialize(data)
       @data = data
       @menu_item_logs = []
+      validate_data_format
     end
     
     def call
-      validate_format_data
-      create_restaurants(@data["restaurants"])
+      create_restaurants(@data[:restaurants])
       @menu_item_logs
     end
 
     private 
 
     def validate_permitted_attributes(data, allowed_attributes, context)
-      unpermitted_attributes = data.keys - allowed_attributes.map(&:to_s)
+      unpermitted_attributes = data.keys - allowed_attributes
   
       if unpermitted_attributes.any?
-        raise ArgumentError.new("Invalid formar Data. Unpermitted #{context} key(s): #{unpermitted_attributes.join(', ')}")
+        raise ArgumentError.new("Invalid formar Data. Unpermitted #{context} attributes: #{unpermitted_attributes.join(', ')}")
       end
     end
 
-    def validate_format_data      
+    def validate_data_format      
       raise ArgumentError.new("Invalid data format. It should be a Hash.") unless  @data.is_a?(Hash)
-      raise ArgumentError.new("No restaurants found in the give JSON data.") if @data.blank? || !@data['restaurants'].is_a?(Array) || @data["restaurants"].blank?
+      @data.deep_symbolize_keys!
+      raise ArgumentError.new("No restaurants found in the give JSON data.") if @data.blank? || !@data[:restaurants].is_a?(Array) || @data[:restaurants].blank?
       
-      @data["restaurants"].each do |restaurant| 
+      @data[:restaurants].each do |restaurant| 
         validate_permitted_attributes(restaurant, ALLOWED_RESTAURANT_ATTRIBUTES, "Restaurant")
-        restaurant["menus"].each do |menu| 
+        restaurant[:menus].each do |menu| 
           validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
-          menu["menu_items"].each do |menu_item| 
+          menu[:menu_items].each do |menu_item| 
             validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
           end
         end
@@ -43,7 +44,7 @@ module Restaurants
     def create_restaurants(restaurants_data)
       restaurants_data.each do |restaurant_data|
         logs = []
-        restaurant = Restaurant.new(restaurant_data.except("menus"))
+        restaurant = Restaurant.new(restaurant_data.except(:menus))
 
         if restaurant.save
           logs << "Restaurant #{restaurant.name}} successfully created. ID: #{restaurant.id}}"
@@ -51,7 +52,7 @@ module Restaurants
           logs << "Failed to create Restaurant. #{restaurant.errors.full_messages.join(", ")}"
         end
         
-        create_menus(restaurant_data["menus"], restaurant&.id, logs)        
+        create_menus(restaurant_data[:menus], restaurant&.id, logs)        
       end
     end
 
@@ -61,10 +62,10 @@ module Restaurants
 
         if restaurant_id.nil?
           logs << "Failed to create Menu because Restaurant does no exist."
-          create_menu_items(menu_data["menu_items"], nil, logs)
+          create_menu_items(menu_data[:menu_items], nil, logs)
         end
 
-        menu = Menu.new(menu_data.except("menu_items").merge(restaurant_id: restaurant_id))
+        menu = Menu.new(menu_data.except(:menu_items).merge(restaurant_id: restaurant_id))
 
         if menu.save
           logs << "Menu #{menu.name}} successfully created. ID: #{menu.id}}"
@@ -72,7 +73,7 @@ module Restaurants
           logs << "Failed to create Menu. #{menu.errors.full_messages.join(", ")}"
         end
 
-        create_menu_items(menu_data["menu_items"], menu&.id, logs)        
+        create_menu_items(menu_data[:menu_items], menu&.id, logs)        
       end
     end
 
@@ -86,7 +87,7 @@ module Restaurants
         end
 
         success = true
-        menu_item = MenuItem.find_by_name(menu_item_data["name"])
+        menu_item = MenuItem.find_by_name(menu_item_data[:name])
 
         if menu_item.present?
           logs << "There's already an menu item with this name."
