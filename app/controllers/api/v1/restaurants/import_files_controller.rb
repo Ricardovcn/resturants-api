@@ -13,7 +13,7 @@ class Api::V1::Restaurants::ImportFilesController < ApplicationController
     render_error(error.message, :unprocessable_entity)
   rescue StandardError => error
     logger.error "Error importing restaurants: #{error.message}"
-    logger.error e.backtrace[0..10].join("\n")
+    logger.error error.backtrace[0..10].join("\n")
     render_error("Failed to serialize and persist data", :internal_server_error)
   end
 
