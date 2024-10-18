@@ -9,7 +9,7 @@ module Restaurants
       let(:empty_restaurants_hash) { { "restaurants": []} }
       let(:restaurants_is_not_an_array_hash) { { "restaurants": {}} }
       let(:invalid_keys_hash) { INVALID_KEY_HASH }
-      
+      let(:invalid_restaurant_missing_name) { INVALID_RESTAURANT_MISSING_NAME }
       
       let(:valid_restaurant_complete) { VALID_RESTAURANT_COMPLETE }
       let(:valid_restaurant_multiple_menus) { VALID_RESTAURANT_MULTIPLE_MENUS }
@@ -55,11 +55,11 @@ module Restaurants
         end
       end
 
-      context 'when the input data has invalid keys/attributess' do
-        subject { described_class.new(invalid_keys_hash) }
+      context 'when the restaurant is missing required parameters' do
+        subject { described_class.new(invalid_restaurant_missing_name) }
 
         it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Menu attributes: dishes")
+          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Required param 'name' missing for Restaurant.")
         end
       end
       

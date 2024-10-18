@@ -17,6 +17,10 @@ module Restaurants
 
     private 
 
+    def validate_required_param(data, param, context)
+      raise ArgumentError.new("Invalid format Data. Required param '#{param}' missing for #{context}.") unless data.include?(param)
+    end
+
     def validate_permitted_attributes(data, allowed_attributes, context)
       unpermitted_attributes = data.keys - allowed_attributes
   
@@ -32,10 +36,13 @@ module Restaurants
       
       @data[:restaurants].each do |restaurant| 
         validate_permitted_attributes(restaurant, ALLOWED_RESTAURANT_ATTRIBUTES, "Restaurant")
+        validate_required_param(restaurant, :name, "Restaurant")
         restaurant[:menus].each do |menu| 
           validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
+          validate_required_param(restaurant, :name, "Restaurant")
           menu[:menu_items].each do |menu_item| 
             validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
+            validate_required_param(restaurant, :name, "Restaurant")
           end
         end
       end
