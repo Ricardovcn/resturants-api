@@ -12,13 +12,15 @@ module Restaurants
       let(:invalid_keys_hash) { INVALID_KEY_HASH }
       let(:invalid_restaurant_missing_name) { INVALID_RESTAURANT_MISSING_NAME }
       let(:invalid_menu_missing_name) { INVALID_MENU_MISSING_NAME }
-      
+      let(:invalid_restaurant_extra_attribute) { INVALID_RESTAURANT_EXTRA_ATTRIBUTES }
+      let(:invalid_menu_item_invalid_price) { VALID_RESTAURANT_MISSING_MENUS }
+
       let(:valid_restaurant_complete) { VALID_RESTAURANT_COMPLETE }
       let(:valid_restaurant_multiple_menus) { VALID_RESTAURANT_MULTIPLE_MENUS }
       let(:valid_restaurant_extra_attributes) { VALID_RESTAURANT_EXTRA_ATTRIBUTES }
       let(:valid_menu_missing_items) { VALID_MENU_MISSING_ITEMS }
       let(:valid_restauran_missing_menus) { VALID_RESTAURANT_MISSING_MENUS }
-
+      
       context 'when the input data is not a hash' do
         subject { described_class.new(not_a_hash) }
 
@@ -75,7 +77,15 @@ module Restaurants
         end
       end
 
-      context 'Pass validation' do
+      context 'when the restaurant has an extra and invalid attribute' do
+        subject { described_class.new(invalid_restaurant_extra_attribute) }
+
+        it 'raises an ArgumentError' do
+          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Restaurant attributes: extra_info")
+        end
+      end
+
+      context 'Pass data format validation' do
         restaurant_double = Restaurant.new
         menu_double = Menu.new
         menu_item_double = MenuItem.new

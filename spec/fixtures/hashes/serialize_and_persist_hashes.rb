@@ -158,7 +158,7 @@ VALID_RESTAURANT_MISSING_MENUS = {
   "restaurants": [
     {
       "name": "Pizza Place",
-      "menus": []
+      "menus": []    # Empty menus
     }
   ]
 }
@@ -193,22 +193,6 @@ INVALID_MENU_MISSING_NAME = {
   ]
 }
 
-INVALID_MENU_ITEM_INVALID_PRICE = {
-  "restaurants": [
-    {
-      "name": "Sushi Spot",
-      "menus": [
-        {
-          "name": "lunch",
-          "menu_items": [
-            { "name": "California Roll", "price": "ten" }  # Invalid price type (string instead of numeric)
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 INVALID_RESTAURANT_EXTRA_ATTRIBUTES = {
   "restaurants": [
     {
@@ -223,6 +207,22 @@ INVALID_RESTAURANT_EXTRA_ATTRIBUTES = {
       ],
       "description": "Fast food joint.",
       "extra_info": "Not allowed attribute"  # This attribute is not permitted
+    }
+  ]
+}
+
+INVALID_MENU_ITEM_INVALID_PRICE = {
+  "restaurants": [
+    {
+      "name": "Sushi Spot",
+      "menus": [
+        {
+          "name": "lunch",
+          "menu_items": [
+            { "name": "California Roll", "price": "ten" }  # Invalid price type (string instead of numeric)
+          ]
+        }
+      ]
     }
   ]
 }
