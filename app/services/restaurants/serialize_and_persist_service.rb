@@ -1,18 +1,46 @@
 module Restaurants
-  class ImportService
+  class SerializeAndPersistService
+    ALLOWED_RESTAURANT_ATTRIBUTES = [:name, :menus, :description, :phone_number, :email].freeze
+    ALLOWED_MENU_ATTRIBUTES = [:name, :menu_items, :description, :is_acive].freeze
+    ALLOWED_MENU_ITEM_ATTRIBUTES = [:name, :price, :category, :description, :ingredients, :is_available, :calories, :allergens].freeze
+
     def initialize(data)
       @data = data
       @menu_item_logs = []
     end
     
-    def serialize_and_persist
-      import_restaurants(@data["restaurants"])
+    def call
+      validate_format_data
+      create_restaurants(@data["restaurants"])
       @menu_item_logs
     end
 
     private 
 
-    def import_restaurants(restaurants_data)
+    def validate_permitted_attributes(data, allowed_attributes, context)
+      unpermitted_attributes = data.keys - allowed_attributes.map(&:to_s)
+  
+      if unpermitted_attributes.any?
+        raise ArgumentError.new("Invalid formar Data. Unpermitted #{context} key(s): #{unpermitted_attributes.join(', ')}")
+      end
+    end
+
+    def validate_format_data      
+      raise ArgumentError.new("Invalid data format. It should be a Hash.") unless  @data.is_a?(Hash)
+      raise ArgumentError.new("No restaurants found in the give JSON data.") if @data.blank? || !@data['restaurants'].is_a?(Array) || @data["restaurants"].blank?
+      
+      @data["restaurants"].each do |restaurant| 
+        validate_permitted_attributes(restaurant, ALLOWED_RESTAURANT_ATTRIBUTES, "Restaurant")
+        restaurant["menus"].each do |menu| 
+          validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
+          menu["menu_items"].each do |menu_item| 
+            validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
+          end
+        end
+      end
+    end
+    
+    def create_restaurants(restaurants_data)
       restaurants_data.each do |restaurant_data|
         logs = []
         restaurant = Restaurant.new(restaurant_data.except("menus"))
@@ -23,17 +51,17 @@ module Restaurants
           logs << "Failed to create Restaurant. #{restaurant.errors.full_messages.join(", ")}"
         end
         
-        import_menus(restaurant_data["menus"], restaurant&.id, logs)        
+        create_menus(restaurant_data["menus"], restaurant&.id, logs)        
       end
     end
 
-    def import_menus(menus_data, restaurant_id, restaurant_logs)
+    def create_menus(menus_data, restaurant_id, restaurant_logs)
       menus_data.each do |menu_data|
         logs = restaurant_logs.dup
 
         if restaurant_id.nil?
           logs << "Failed to create Menu because Restaurant does no exist."
-          import_menu_items(menu_data["menu_items"], nil, logs)
+          create_menu_items(menu_data["menu_items"], nil, logs)
         end
 
         menu = Menu.new(menu_data.except("menu_items").merge(restaurant_id: restaurant_id))
@@ -44,11 +72,11 @@ module Restaurants
           logs << "Failed to create Menu. #{menu.errors.full_messages.join(", ")}"
         end
 
-        import_menu_items(menu_data["menu_items"], menu&.id, logs)        
+        create_menu_items(menu_data["menu_items"], menu&.id, logs)        
       end
     end
 
-    def import_menu_items(menu_items_data, menu_id, menu_logs)
+    def create_menu_items(menu_items_data, menu_id, menu_logs)
       menu_items_data.each do |menu_item_data|
         logs = menu_logs.dup
         if menu_id.nil?
