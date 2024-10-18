@@ -155,6 +155,21 @@ INVALID_RESTAURANT_MISSING_NAME = {
   ]
 }
 
+INVALID_MENU_MISSING_NAME = {
+  "restaurants": [
+    {
+      "name": "Pizza Place",
+      "menus": [
+        {
+          "menu_items": [
+            { "name": "Burger", "price": 10.00 }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
 INVALID_MENU_MISSING_ITEMS = {
   "restaurants": [
     {

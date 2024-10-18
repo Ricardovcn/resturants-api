@@ -39,10 +39,10 @@ module Restaurants
         validate_required_param(restaurant, :name, "Restaurant")
         restaurant[:menus].each do |menu| 
           validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
-          validate_required_param(restaurant, :name, "Restaurant")
+          validate_required_param(menu, :name, "Menu")
           menu[:menu_items].each do |menu_item| 
             validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
-            validate_required_param(restaurant, :name, "Restaurant")
+            validate_required_param(menu_item, :name, "Menu Item")
           end
         end
       end
