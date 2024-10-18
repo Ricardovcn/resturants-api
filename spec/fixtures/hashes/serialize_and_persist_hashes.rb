@@ -140,6 +140,29 @@ VALID_RESTAURANT_EXTRA_ATTRIBUTES = {
   ]
 }
 
+VALID_MENU_MISSING_ITEMS = {
+  "restaurants": [
+    {
+      "name": "Pizza Place",
+      "menus": [
+        {
+          "name": "dinner",
+          "menu_items": []  # Empty menu items
+        }
+      ]
+    }
+  ]
+}
+
+VALID_RESTAURANT_MISSING_MENUS = {
+  "restaurants": [
+    {
+      "name": "Pizza Place",
+      "menus": []
+    }
+  ]
+}
+
 INVALID_RESTAURANT_MISSING_NAME = {
   "restaurants": [
     {
@@ -164,20 +187,6 @@ INVALID_MENU_MISSING_NAME = {
           "menu_items": [
             { "name": "Burger", "price": 10.00 }
           ]
-        }
-      ]
-    }
-  ]
-}
-
-INVALID_MENU_MISSING_ITEMS = {
-  "restaurants": [
-    {
-      "name": "Pizza Place",
-      "menus": [
-        {
-          "name": "dinner",
-          "menu_items": []  # Empty menu items
         }
       ]
     }

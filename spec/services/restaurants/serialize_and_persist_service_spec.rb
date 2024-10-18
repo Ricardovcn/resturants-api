@@ -1,4 +1,5 @@
 require 'rails_helper'
+
 require_relative '../../fixtures/hashes/serialize_and_persist_hashes' 
 
 module Restaurants
@@ -15,6 +16,8 @@ module Restaurants
       let(:valid_restaurant_complete) { VALID_RESTAURANT_COMPLETE }
       let(:valid_restaurant_multiple_menus) { VALID_RESTAURANT_MULTIPLE_MENUS }
       let(:valid_restaurant_extra_attributes) { VALID_RESTAURANT_EXTRA_ATTRIBUTES }
+      let(:valid_menu_missing_items) { VALID_MENU_MISSING_ITEMS }
+      let(:valid_restauran_missing_menus) { VALID_RESTAURANT_MISSING_MENUS }
 
       context 'when the input data is not a hash' do
         subject { described_class.new(not_a_hash) }
@@ -71,37 +74,75 @@ module Restaurants
           expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Required param 'name' missing for Menu.")
         end
       end
+
+      context 'Pass validation' do
+        restaurant_double = Restaurant.new
+        menu_double = Menu.new
+        menu_item_double = MenuItem.new
+        menu_item_menu_double = MenuItemMenu.new
+
+        before do
+          allow(Restaurant).to receive(:new).and_return(restaurant_double)
+          allow(Menu).to receive(:new).and_return(menu_double)
+          allow(MenuItem).to receive(:new).and_return(menu_item_double)
+          allow(MenuItemMenu).to receive(:new).and_return(menu_item_menu_double)
       
-
-      # Success cases
-
-      context 'when the input data is valid' do        
-        subject { described_class.new(valid_restaurant_complete) }
-
-        it 'returns an array of logs' do          
-          result = subject.call
-          expect(result).to be_present
-          expect(result).to be_an_instance_of(Array)
+          allow(restaurant_double).to receive(:save).and_return(true)
+          allow(menu_double).to receive(:save).and_return(true)
+          allow(menu_item_double).to receive(:save).and_return(true)
+          allow(MenuItem).to receive(:find_by_name).and_return(nil)
+          allow(menu_item_menu_double).to receive(:save).and_return(true)
         end
-      end
 
-      context 'when the input data is valid' do        
-        subject { described_class.new(valid_restaurant_multiple_menus) }
+        context 'when the input data is valid' do        
+          subject { described_class.new(valid_restaurant_complete) }
 
-        it 'returns an array of logs' do          
-          result = subject.call
-          expect(result).to be_present
-          expect(result).to be_an_instance_of(Array)
+          it 'returns an array of logs' do
+            result = subject.call
+            expect(result).to be_present
+            expect(result).to be_an_instance_of(Array)
+          end
         end
-      end
 
-      context 'when the input data is valid' do        
-        subject { described_class.new(valid_restaurant_extra_attributes) }
+        context 'when the restaurant have more than one menu' do        
+          subject { described_class.new(valid_restaurant_multiple_menus) }
 
-        it 'returns an array of logs' do          
-          result = subject.call
-          expect(result).to be_present
-          expect(result).to be_an_instance_of(Array)
+          it 'returns an array of logs' do          
+            result = subject.call
+            expect(result).to be_present
+            expect(result).to be_an_instance_of(Array)
+          end
+        end
+
+        context 'when the restaurant has extra valid attributes' do        
+          subject { described_class.new(valid_restaurant_extra_attributes) }
+
+          it 'returns an array of logs' do          
+            result = subject.call
+            expect(result).to be_present
+            expect(result).to be_an_instance_of(Array)
+          end
+        end
+
+        context 'When the restaurant is missing menus' do        
+          subject { described_class.new(valid_restauran_missing_menus) }
+
+          it 'creates the Restaurant' do    
+            expect(restaurant_double).to receive(:save).once   
+            expect(menu_double).not_to  receive(:save)
+            expect(menu_item_double).not_to  receive(:save)       
+            result = subject.call
+          end
+        end
+
+        context 'When the menu is missing menu_items' do        
+          subject { described_class.new(valid_menu_missing_items) }
+          it 'creates the Restaurant and the Menu, but not a MenuItem' do
+            expect(restaurant_double).to receive(:save).once   
+            expect(menu_double).to receive(:save).once  
+            expect(menu_item_double).not_to  receive(:save)        
+            result = subject.call
+          end
         end
       end
     end
