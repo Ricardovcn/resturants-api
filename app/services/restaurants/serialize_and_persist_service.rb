@@ -21,7 +21,7 @@ module Restaurants
       unpermitted_attributes = data.keys - allowed_attributes
   
       if unpermitted_attributes.any?
-        raise ArgumentError.new("Invalid formar Data. Unpermitted #{context} attributes: #{unpermitted_attributes.join(', ')}")
+        raise ArgumentError.new("Invalid format Data. Unpermitted #{context} attributes: #{unpermitted_attributes.join(', ')}")
       end
     end
 

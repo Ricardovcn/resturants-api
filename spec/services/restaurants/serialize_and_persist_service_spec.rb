@@ -51,7 +51,7 @@ module Restaurants
         subject { described_class.new(invalid_keys_hash) }
 
         it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid formar Data. Unpermitted Menu attributes: dishes")
+          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Menu attributes: dishes")
         end
       end
 
@@ -59,7 +59,7 @@ module Restaurants
         subject { described_class.new(invalid_keys_hash) }
 
         it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid formar Data. Unpermitted Menu attributes: dishes")
+          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Menu attributes: dishes")
         end
       end
       
