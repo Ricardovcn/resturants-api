@@ -9,7 +9,11 @@ module Restaurants
       let(:empty_restaurants_hash) { { "restaurants": []} }
       let(:restaurants_is_not_an_array_hash) { { "restaurants": {}} }
       let(:invalid_keys_hash) { INVALID_KEY_HASH }
-      let(:valid_hash) { VALID_HASH }
+      
+      
+      let(:valid_restaurant_complete) { VALID_RESTAURANT_COMPLETE }
+      let(:valid_restaurant_multiple_menus) { VALID_RESTAURANT_MULTIPLE_MENUS }
+      let(:valid_restaurant_extra_attributes) { VALID_RESTAURANT_EXTRA_ATTRIBUTES }
 
       context 'when the input data is not a hash' do
         subject { described_class.new(not_a_hash) }
@@ -51,9 +55,39 @@ module Restaurants
         end
       end
 
+      context 'when the input data has invalid keys/attributess' do
+        subject { described_class.new(invalid_keys_hash) }
+
+        it 'raises an ArgumentError' do
+          expect { subject.call }.to raise_error(ArgumentError, "Invalid formar Data. Unpermitted Menu attributes: dishes")
+        end
+      end
       
+
+      # Success cases
+
       context 'when the input data is valid' do        
-        subject { described_class.new(valid_hash) }
+        subject { described_class.new(valid_restaurant_complete) }
+
+        it 'returns an array of logs' do          
+          result = subject.call
+          expect(result).to be_present
+          expect(result).to be_an_instance_of(Array)
+        end
+      end
+
+      context 'when the input data is valid' do        
+        subject { described_class.new(valid_restaurant_multiple_menus) }
+
+        it 'returns an array of logs' do          
+          result = subject.call
+          expect(result).to be_present
+          expect(result).to be_an_instance_of(Array)
+        end
+      end
+
+      context 'when the input data is valid' do        
+        subject { described_class.new(valid_restaurant_extra_attributes) }
 
         it 'returns an array of logs' do          
           result = subject.call
