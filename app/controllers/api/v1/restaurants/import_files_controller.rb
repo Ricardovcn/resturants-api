@@ -1,5 +1,5 @@
 class Api::V1::Restaurants::ImportFilesController < ApplicationController
-  before_action :set_file, :validate_file_extension 
+  before_action :set_file, :validate_file_extension, :parse_file_data
 
   ALLOWED_EXTENSIONS = %w[.json]
 
@@ -8,8 +8,19 @@ class Api::V1::Restaurants::ImportFilesController < ApplicationController
   ].freeze
 
   def import_json
-    json_data = JSON.parse(@file.read)
-    render json: ::Restaurants::ImportService.new(json_data).serialize_and_persist
+    render json: ::Restaurants::SerializeAndPersistService.new(@json_data).call
+  rescue ArgumentError => error
+    render_error(error.message, :unprocessable_entity)
+  rescue StandardError => error
+    logger.error "Error importing restaurants: #{error.message}"
+    logger.error e.backtrace[0..10].join("\n")
+    render_error("Failed to serialize and persist data", :internal_server_error)
+  end
+
+  private 
+
+  def parse_file_data
+    @json_data = JSON.parse(@file.read)
   rescue JSON::ParserError
     render_error("Invalid JSON file.", :unprocessable_entity)
   end
