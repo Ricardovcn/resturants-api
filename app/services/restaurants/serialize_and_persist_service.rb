@@ -15,9 +15,9 @@ module Restaurants
       validate_data_format
       ActiveRecord::Base.transaction do
         success = create_restaurants(@data[:restaurants])
-      end
 
-      { success: success, logs: @logger.all_logs }
+        return { success: success, logs: @logger.all_logs }
+      end
     rescue ArgumentError => e
       @logger.log("Error",  ["#{e.message}"])
       @logger.log("Rollback", "Rolling back database changes due to error (#{ e.message }).") if @logger.all_logs.size > 1
@@ -90,32 +90,33 @@ module Restaurants
         menu_item = MenuItem.find_by_name(menu_item_data[:name])
 
         if menu_item.present?
-          messages << "There's already an menu item with this name."
-          messages << "The existing object will be used instead of creating a new one."
+          messages = ["MenuItem #{menu_item_data[:name]} already exists.", "The existing object will be used instead of creating a new one."] 
         else
           menu_item = MenuItem.new(menu_item_data)
           if menu_item.save
-            @logger.log("Create MenuItem", ["MenuItem #{menu_item.name}} successfully created."], { id: menu_item.id })
+            messages << "MenuItem #{menu_item.name} successfully created."
           else
-            @logger.log("Error", ["Failed to create MenuItem. #{menu_item.errors.full_messages.join(", ")}"])
+            @logger.log("Error", ["Failed to create MenuItem #{menu_item.name}. #{menu_item.errors.full_messages.join(", ")}"])
             return false
           end
         end  
-                
-        menu_item_menu = MenuItemMenu.new(menu_item_id: menu_item.id, menu_id: menu_id)
         
-        begin 
+        menu_item_menu = MenuItemMenu.find_by(menu_item_id: menu_item.id, menu_id: menu_id)
+        
+        if menu_item_menu.present?
+          messages << "The MenuItem (ID: #{menu_item.id}) is already associated with the Menu (ID: #{menu_id})"
+          @logger.log("Create MenuItem ", messages, { id: menu_item.id })
+        else
+          menu_item_menu = MenuItemMenu.new(menu_item_id: menu_item.id, menu_id: menu_id)
+
           if menu_item_menu.save
-            messages << "Association Menu with MenuItem successfully created."
-            @logger.log("Create Association ", messages)
+            messages << "Association Menu (ID: #{menu_id}) with MenuItem (ID: #{menu_item.id}) successfully created."
+            @logger.log("Create MenuItem ", messages, { id: menu_item.id })
           else
-            messages << "Fail to associate Menu with MenuItem. #{menu_item_menu.errors.full_messages.join(", ")}"
+            messages << "Fail to associate Menu (ID: #{menu_id}) with MenuItem  (ID: #{menu_item.id}). #{menu_item_menu.errors.full_messages.join(", ")}"
             @logger.log("Error", messages)
             return false
           end
-        rescue ActiveRecord::RecordNotUnique
-          messages << "This MenuItem is already associated with the Menu"
-          @logger.log("Create Association ", messages)
         end
       end
     end
