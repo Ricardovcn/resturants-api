@@ -1,24 +1,25 @@
-# README
+# Restaurant Menu System Challenge
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This repository contains a solution to the **Restaurant Menu System Challenge**, built in three progressive levels.
+The application is developed using Ruby on Rails, with the objective of creating and managing restaurant menus and menu items via API endpoints.
 
-Things you may want to cover:
+## Levels Overview
 
-* Ruby version
+### Level 1: Basics
 
-* System dependencies
+The code for the first part of the code challenge is place in the main branch.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- **Endpoints**:
+  - `GET /api/v1/menus`
+  - `POST /api/v1/menus`
+  - `GET /api/v1/menus/:id`
+  - `POST /api/v1/menus/:id`
+  - `PUT /api/v1/menus/:id`
+  - `DELETE /api/v1/menus/:id`
+  - `UPDATE /api/v1/menu_items`
+  - `GET /api/v1/menu_items`
+  - `POST /api/v1/menu_items`
+  - `POST /api/v1/menu_items/:id`
+  - `PUT /api/v1/menu_items/:id`
+  - `DELETE /api/v1/menu_items/:id`
+---
