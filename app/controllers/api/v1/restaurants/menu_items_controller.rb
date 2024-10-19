@@ -1,4 +1,5 @@
-class Api::V1::MenuItemsController < ApplicationController
+class Api::V1::Restaurants::MenuItemsController < ApplicationController
+  before_action :set_restaurant
   before_action :set_menu_item, only: [:show, :update, :destroy]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
@@ -8,7 +9,7 @@ class Api::V1::MenuItemsController < ApplicationController
   ].freeze
   
   def index
-    render json: MenuItem.all
+    render json: @restaurant.menu_items
   end
 
   def show
@@ -46,7 +47,7 @@ class Api::V1::MenuItemsController < ApplicationController
   private 
 
   def validate_empty_body
-    render_error("No menu item attributes was passed as parameters.", :bad_request) if permitted_params.blank?
+    render_error("No menu item attributes was passed as parameters.", :bad_request) if permitted_params.except(:restaurant_id).blank?
   end
 
   def required_params
@@ -63,13 +64,19 @@ class Api::V1::MenuItemsController < ApplicationController
       :description,
       :is_available,
       :calories,
+      :restaurant_id,
       ingredients: [],
       allergens: []
     )
   end
 
   def set_menu_item
-    @menu_item = MenuItem.find_by_id(params['id'])
+    @menu_item = @restaurant.menu_items.find_by_id(params['id'])
     render_error("Invalid menu item id!", :not_found) if @menu_item.nil?
+  end
+
+  def set_restaurant   
+    @restaurant = Restaurant.find_by_id(params['restaurant_id'])
+    render_error("Invalid restaurant id!", :not_found) if @restaurant.nil?
   end
 end
