@@ -24,64 +24,88 @@ module Restaurants
       context 'when the input data is not a hash' do
         subject { described_class.new(not_a_hash) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid data format. It should be a Hash.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("Invalid data format. It should be a Hash.")
         end
       end
 
       context 'when the input data is empy/blank' do
         subject { described_class.new(empty_hash) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "No restaurants found in the give JSON data.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("No restaurants found in the give JSON data.")
         end
       end
 
       context 'when the input data has no restaurants' do
         subject { described_class.new(empty_restaurants_hash) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "No restaurants found in the give JSON data.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("No restaurants found in the give JSON data.")
         end
       end
 
       context 'when the restaurants is not an array' do
         subject { described_class.new(restaurants_is_not_an_array_hash) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "No restaurants found in the give JSON data.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("No restaurants found in the give JSON data.")
         end
       end
 
       context 'when the input data has invalid keys/attributess' do
         subject { described_class.new(invalid_keys_hash) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Menu attributes: dishes")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("Invalid format Data. Unpermitted Menu attributes: dishes")
         end
       end
 
       context 'when the restaurant is missing required parameters' do
         subject { described_class.new(invalid_restaurant_missing_name) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Required param 'name' missing for Restaurant.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("Failed to create Restaurant. Name can't be blank")
         end
       end
 
-      context 'when the restaurant is missing required parameters' do
+      context 'when the menu is missing required parameters' do
         subject { described_class.new(invalid_menu_missing_name) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Required param 'name' missing for Menu.")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("Failed to create Menu. Name can't be blank")
         end
       end
 
       context 'when the restaurant has an extra and invalid attribute' do
         subject { described_class.new(invalid_restaurant_extra_attribute) }
 
-        it 'raises an ArgumentError' do
-          expect { subject.call }.to raise_error(ArgumentError, "Invalid format Data. Unpermitted Restaurant attributes: extra_info")
+        it 'returns a Failed result and a array of logs' do
+          result = subject.call
+
+          expect(result[:success]).to be(false) 
+          expect(result[:logs].last[:messages]).to include("Invalid format Data. Unpermitted Restaurant attributes: extra_info")
         end
       end
 
