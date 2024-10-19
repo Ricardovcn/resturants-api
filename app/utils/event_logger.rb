@@ -15,7 +15,9 @@ class EventLogger
     @logs << log_entry 
   end
 
-  def all_logs
-    @logs
+  def all_logs(event = nil)
+    return @logs if event.nil?
+
+    @logs.select { |log| log.event == event }
   end
 end
