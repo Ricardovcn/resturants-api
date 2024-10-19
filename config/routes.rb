@@ -6,13 +6,12 @@ Rails.application.routes.draw do
           resources :menu_item_menus, only: [:create, :destroy], param: :menu_item_id
         end
 
+        resources :menu_items
+
         collection do
           post 'import', to: 'import_files#import_json'
         end
       end
-
-      resources :menu_items
-      
     end
   end
 end

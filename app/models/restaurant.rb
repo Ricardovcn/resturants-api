@@ -1,7 +1,7 @@
 class Restaurant < ApplicationRecord
   before_destroy :remove_menu_item_associations
   has_many :menus, class_name: "Menu", dependent: :destroy
-
+  has_many :menu_items, class_name: "MenuItem", dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :description, length: { maximum: 500 }, allow_blank: true
