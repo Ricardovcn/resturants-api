@@ -26,6 +26,10 @@ class MenuItem < ApplicationRecord
     price_in_cents.to_f / 100
   end
 
+  def as_json(options = {}) 
+    super(options.merge(methods: :price, except: :price_in_cents))
+  end
+
   private 
 
   def validate_ingredients

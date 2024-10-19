@@ -59,7 +59,7 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   def permitted_params
     params.permit(
       :name, 
-      :price_in_cents,
+      :price,
       :category,
       :description,
       :is_available,
