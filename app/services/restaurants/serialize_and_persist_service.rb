@@ -13,13 +13,14 @@ module Restaurants
     
     def call            
       validate_data_format
-      success = create_restaurants(@data[:restaurants])
+      ActiveRecord::Base.transaction do
+        success = create_restaurants(@data[:restaurants])
+      end
+
       { success: success, logs: @logger.all_logs }
     rescue ArgumentError => e
-      messages = [ "Error: #{e.message}." ]
-      messages << "Database Rollback executed. Nothing was added to the Database." if @logger.all_logs.size > 1
-      
-      @logger.log("Error", messages)
+      @logger.log("Error",  ["#{e.message}"])
+      @logger.log("Rollback", "Rolling back database changes due to error (#{ e.message }).") if @logger.all_logs.size > 1
       { success: false, logs: @logger.all_logs }
     end
 
