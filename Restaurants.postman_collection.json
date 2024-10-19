@@ -1,0 +1,807 @@
+{
+	"info": {
+		"_postman_id": "2409d25f-7968-479f-b8ac-75406c9c94a2",
+		"name": "Restaurants",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27102949"
+	},
+	"item": [
+		{
+			"name": "Menu",
+			"item": [
+				{
+					"name": "MenuItemMenu",
+					"item": [
+						{
+							"name": "menu_item_menu",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"menu_item_id\": \"6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/restaurants/2/menus/1/menu_item_menus",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"restaurants",
+										"2",
+										"menus",
+										"1",
+										"menu_item_menus"
+									]
+								},
+								"description": "### Description:\n\nThis endpoint allows you to create an association between a menu and a menu item.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `menu_id` | string | Yes | The unique ID of the menu to which the menu item will be associated. |\n\n### Request Body:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `menu_item_id` | string | Yes | The unique ID of the menu item to be linked to the menu. |\n\n### Response:\n\n- **200 Created**: Indicates that the association was successfully created.\n    \n- **400 Bad Request**: If the request is missing required parameters or contains invalid data.\n    \n- **404 Not Found**: If the specified menu or menu item does not exist."
+							},
+							"response": []
+						},
+						{
+							"name": "menu_item_menu",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful DELETE request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/restaurants/2/menus/1/menu_item_menus/6",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"restaurants",
+										"2",
+										"menus",
+										"1",
+										"menu_item_menus",
+										"6"
+									]
+								},
+								"description": "### Description:\n\nThis endpoint allows you to remove a specific association between a menu and a menu item.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `menu_id` | string | Yes | The unique ID of the menu from which you want to remove the item association. |\n| `menu_item_id` | string | Yes | The unique ID of the menu item whose association with the menu is to be deleted. |\n\n### Response:\n\n- **204 No Content**: Indicates that the association was successfully deleted.\n    \n- **404 Not Found**: If the specified menu or menu item association does not exist"
+							},
+							"response": []
+						}
+					],
+					"description": "Association related requests"
+				},
+				{
+					"name": "menus",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menus",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menus"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint retrieves a list of all menus for a specified restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant for which you want to retrieve menus. |\n\n### Response:\n\n- **200 OK**: Returns an array of menus associated with the specified restaurant.\n    \n- **404 Not Found**: If the specified restaurant does not exist."
+					},
+					"response": []
+				},
+				{
+					"name": "menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menus/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menus",
+								"1"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint retrieves the details of a specific menu for a given restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant for which you want to retrieve the menu. |\n| `id` | string | Yes | The unique ID of the menu to retrieve. |\n\n### Response:\n\n- **200 OK**: Returns the details of the requested menu.\n    \n- **404 Not Found**: If the specified restaurant or menu does not exist."
+					},
+					"response": []
+				},
+				{
+					"name": "menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"menu name\",\n    \"description\": \"menu description\",\n    \"is_acive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/1/menus",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"1",
+								"menus"
+							]
+						},
+						"description": "StartFragment\n\n### Description:\n\nThis endpoint allows you to create a new menu for a restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant where the menu is being added |\n\n### Request Body:\n\nProvide the necessary details for creating a new menu.\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `name` | string | Yes | The name of the new menu |\n| `description` | string | No | A short description of the menu |\n| `is_active` | boolean | No | Indicates if the menu should be active |\n\nEndFragment"
+					},
+					"response": []
+				},
+				{
+					"name": "menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"menu name\",\n    \"description\": \"menu description\",\n    \"is_acive\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/1/menus/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"1",
+								"menus",
+								"7"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint allows you to update the details of a specific menu within a restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the menu to update |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant this menu belongs to |\n\n### Request Body:\n\nOnly include the fields you wish to update.\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `name` | string | No | The updated name of the menu |\n| `description` | string | No | A short description of the menu |\n| `is_active` | boolean | No | Indicates if the menu is active |"
+					},
+					"response": []
+				},
+				{
+					"name": "menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/1/menus/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"1",
+								"menus",
+								"7"
+							]
+						},
+						"description": "StartFragment\n\n### Description:\n\nThis endpoint allows you to remove an existing menu from a restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the menu to delete |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant containing the menu |\n\n### Response:\n\n- **204 No Content**: Indicates the menu was successfully deleted.\n    \n- **404 Not Found**: If the menu or restaurant does not exis\n    \n\nEndFragment"
+					},
+					"response": []
+				}
+			],
+			"description": "Menu related requests."
+		},
+		{
+			"name": "Import File",
+			"item": [
+				{
+					"name": "Post File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/ricar/OneDrive/Imagens/Predator/rd.json"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/restaurants/import",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"restaurants",
+								"import"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint allows you to import restaurant data from a JSON file into the system.\n\n### Request Body:\n\n- **Content-Type**: `application/json`\n    \n- **File**: Upload your JSON file containing the data.\n    \n\n### Response:\n\n- **200 OK**: If the import is successful, you'll receive a success message with a list of logs indicating the outcome of each item imported.\n    \n- **400 Bad Request**: If there are issues with the format of the JSON file or validation errors.\n    \n- **500 Internal Server Error**: If there’s an unexpected error during the import process."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MenuItem",
+			"item": [
+				{
+					"name": "menu_items",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menu_items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menu_items"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint retrieves a list of all menu items for a specified restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| restaurant `_id` | string | Yes | The unique ID of the restaurant for which you want to retrieve menu items. |\n\n### Response:\n\n- **200 OK**: Returns an array of menu items associated with the specified restaurant.\n    \n- **404 Not Found**: If the specified restaurant does not exist."
+					},
+					"response": []
+				},
+				{
+					"name": "menu_item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menu_items/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menu_items",
+								"2"
+							]
+						},
+						"description": "### Description\nThis endpoint return the details of a specific menu item.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the menu item to return|"
+					},
+					"response": []
+				},
+				{
+					"name": "menu_item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Double Chesse Bacon\",\n    \"price\": 19.90,\n    \"category\": \"Fast Food\",\n    \"description\": \"Super Good One\",\n    \"ingredients\": [\"Cheese\", \"Bacon\", \"Bread\"],\n    \"is_available\": true,\n    \"calories\": 600,\n    \"allergens\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menu_items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menu_items"
+							]
+						},
+						"description": "### Description\n\nThis endpoint allows you to create a menu item.\n\n### Request Body Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `name` | string | No | The updated name of the restaurant |\n| `description` | string | No | A short description of the restaurant |\n| `price` | float | No | The price of the menu item |\n| `category` | string | No | The category of the menu item |\n| `ingredientes` | array | No | List of ingredients |\n| `calories` | integer | No | Number of calories |\n| `is_available` | boolean | No | Is the menu item available now |\n| `allergens` | array | No | List of allergens |"
+					},
+					"response": []
+				},
+				{
+					"name": "menu_item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Double Chesse Bacon\",\n    \"price\": 29.90,\n    \"category\": \"Fast Food\",\n    \"description\": \"Super Good One\",\n    \"ingredients\": [\"Cheese\", \"Bacon\", \"Bread\"],\n    \"is_available\": true,\n    \"calories\": 600,\n    \"allergens\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menu_items/16",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menu_items",
+								"16"
+							]
+						},
+						"description": "### Description\n\nThis endpoint allows you to update the details of a specific menu item.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the menu item to update |\n\n### Request Body Parameters:\n\nSend only the fields you wish to update.\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `name` | string | No | The updated name of the restaurant |\n| `description` | string | No | A short description of the restaurant |\n| `price` | float | No | The price of the menu item |\n| `category` | string | No | The category of the menu item |\n| `ingredientes` | array | No | List of ingredients |\n| `calories` | integer | No | Number of calories |\n| `is_available` | boolean | No | Is the menu item available now |\n| `allergens` | array | No | List of allergens |"
+					},
+					"response": []
+				},
+				{
+					"name": "menu_item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/restaurants/2/menu_items/16",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"restaurants",
+								"2",
+								"menu_items",
+								"16"
+							]
+						},
+						"description": "### Description:\n\nThis endpoint allows you to delete a specific menu item from a restaurant.\n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the menu item to delete |\n| `restaurant_id` | string | Yes | The unique ID of the restaurant containing the menu item |\n\n### Response:\n\n- **204 No Content**: Indicates the menu item was successfully deleted.\n    \n- **404 Not Found**: If the menu item, menu, or restaurant does not exist."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "restaurants",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/restaurants",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"restaurants"
+					]
+				},
+				"description": "### Description\nThis endpoint returns the list of restaurants."
+			},
+			"response": []
+		},
+		{
+			"name": "restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/restaurants/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"restaurants",
+						"1"
+					]
+				},
+				"description": "### Description  \nThis endpoint returns a the requested restaurant data.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the restaurant to update |"
+			},
+			"response": []
+		},
+		{
+			"name": "restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"restaurant name\",\n    \"email\": \"restaurant_email@gmail.com\",\n    \"description\": \"Restaurant description2\",\n    \"phone_number\": \"+44 4444 4444\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/restaurants",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"restaurants"
+					]
+				},
+				"description": "### Description  \nThis endpoint allows you to create a restaurant.\n\n### Request Body Parameters:\n\n|  | Type | Required | Description |\n| --- | --- | --- | --- |\n| `name` | string | Yes | Name of the restaurant |\n| `description` | string | No | A short description of the restaurant |\n| `phone_number` | string | No | Contact phone number |\n| `email` | string | No | Updated email address |"
+			},
+			"response": []
+		},
+		{
+			"name": "restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"restaurant name\",\n    \"email\": \"restaurant_email@gmail.com\",\n    \"description\": \"Restaurant description2\",\n    \"phone_number\": \"+44 4444 4444\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/restaurants/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"restaurants",
+						"1"
+					]
+				},
+				"description": "### Description  \nThis endpoint allows you to update the details of a specific restaurant.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the restaurant to update |\n\n### Request Body Parameters:\n\nSend only the fields you wish to update.\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `name` | string | No | The updated name of the restaurant |\n| `description` | string | No | A short description of the restaurant |\n| `phone_number` | string | No | The updated contact phone number |\n| `email` | string | No | Updated email address |"
+			},
+			"response": []
+		},
+		{
+			"name": "restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/restaurants/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"restaurants",
+						"1"
+					]
+				},
+				"description": "### Description:\n\nThis endpoint allows you to delete a specific restaurant from the system.  \n\n### Path Parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the restaurant to delete |\n\n### Response:\n\n- **204 No Content**: Indicates the restaurant was successfully deleted.\n    \n- **404 Not Found**: If the restaurant does not exist."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api/v1"
+		}
+	]
+}
