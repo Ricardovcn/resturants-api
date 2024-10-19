@@ -104,6 +104,7 @@ module Restaurants
           allow(menu_item_double).to receive(:save).and_return(true)
           allow(MenuItem).to receive(:find_by_name).and_return(nil)
           allow(menu_item_menu_double).to receive(:save).and_return(true)
+          allow(MenuItemMenu).to receive(:find_by).and_return(nil)
         end
 
         context 'when the restaurant is missing required parameters' do

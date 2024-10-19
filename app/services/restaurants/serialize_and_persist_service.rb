@@ -62,16 +62,16 @@ module Restaurants
           return false
         end
         
-        success = create_menus(restaurant_data[:menus], restaurant.id)   
+        success = create_menus(restaurant_data[:menus], restaurant)   
         return success unless success     
       end
 
       true
     end
 
-    def create_menus(menus_data, restaurant_id)
+    def create_menus(menus_data, restaurant)
       menus_data.each do |menu_data|
-        menu = Menu.new(menu_data.except(:menu_items).merge(restaurant_id: restaurant_id))
+        menu = Menu.new(menu_data.except(:menu_items).merge(restaurant_id: restaurant.id))
 
         if menu.save
           @logger.log("Create Menu", ["Menu #{menu.name} successfully created"], { id: menu.id })
@@ -80,20 +80,20 @@ module Restaurants
           return false
         end
 
-        success = create_menu_items(menu_data[:menu_items], menu.id)
+        success = create_menu_items(menu_data[:menu_items], menu.id, restaurant)
         return success unless success         
       end
     end
 
-    def create_menu_items(menu_items_data, menu_id)
+    def create_menu_items(menu_items_data, menu_id, restaurant)
       menu_items_data.each do |menu_item_data|
         messages = []
-        menu_item = MenuItem.find_by_name(menu_item_data[:name])
-
+        menu_item = restaurant.reload.menu_items.find_by_name(menu_item_data[:name])
+                        
         if menu_item.present?
-          messages = ["MenuItem #{menu_item_data[:name]} already exists.", "The existing object will be used instead of creating a new one."] 
+          messages = ["MenuItem #{menu_item_data[:name]} already exists for the restaurant #{restaurant[:name]}.", "The existing object will be used instead of creating a new one."] 
         else
-          menu_item = MenuItem.new(menu_item_data)
+          menu_item = MenuItem.new(menu_item_data.merge(restaurant_id: restaurant.id))
           if menu_item.save
             messages << "MenuItem #{menu_item.name} successfully created."
           else
@@ -111,7 +111,7 @@ module Restaurants
           menu_item_menu = MenuItemMenu.new(menu_item_id: menu_item.id, menu_id: menu_id)
 
           if menu_item_menu.save
-            messages << "Association Menu (ID: #{menu_id}) with MenuItem (ID: #{menu_item.id}) successfully created."
+            messages << "MenuItem (ID: #{menu_item.id}) successfully associated with Menu (ID: #{menu_id})."
             @logger.log("Create MenuItem ", messages, { id: menu_item.id })
           else
             messages << "Fail to associate Menu (ID: #{menu_id}) with MenuItem  (ID: #{menu_item.id}). #{menu_item_menu.errors.full_messages.join(", ")}"
