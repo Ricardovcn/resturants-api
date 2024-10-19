@@ -1,3 +1,5 @@
+require_relative '../../utils/event_logger.rb'
+
 module Restaurants
   class SerializeAndPersistService
     ALLOWED_RESTAURANT_ATTRIBUTES = [:name, :menus, :description, :phone_number, :email].freeze
@@ -6,23 +8,22 @@ module Restaurants
 
     def initialize(data)
       @data = data
-      @logs = []
+      @logger = EventLogger.new
     end
     
-    def call
+    def call            
+      validate_data_format
       success = create_restaurants(@data[:restaurants])
-      { success: success, logs: @logs }
+      { success: success, logs: @logger.all_logs }
     rescue ArgumentError => e
-      @logs << "Error: #{e.message}."
-      @logs << ". Nothing was added to the Database." if @logs.size > 1
-      { success: false, logs: @logs, error_message: "Error: #{e.message}." }
+      messages = [ "Error: #{e.message}." ]
+      messages << "Database Rollback executed. Nothing was added to the Database." if @logger.all_logs.size > 1
+      
+      @logger.log("Error", messages)
+      { success: false, logs: @logger.all_logs }
     end
 
     private 
-
-    def validate_required_param(data, param, context)
-      raise ArgumentError.new("Invalid format Data. Required param '#{param}' missing for #{context}.") unless data.include?(param)
-    end
 
     def validate_permitted_attributes(data, allowed_attributes, context)
       unpermitted_attributes = data.keys - allowed_attributes
@@ -39,31 +40,31 @@ module Restaurants
       
       @data[:restaurants].each do |restaurant| 
         validate_permitted_attributes(restaurant, ALLOWED_RESTAURANT_ATTRIBUTES, "Restaurant")
-        validate_required_param(restaurant, :name, "Restaurant")
         restaurant[:menus].each do |menu| 
           validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
-          validate_required_param(menu, :name, "Menu")
           menu[:menu_items].each do |menu_item| 
             validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
-            validate_required_param(menu_item, :name, "Menu Item")
           end
         end
       end
     end
     
     def create_restaurants(restaurants_data)
-      restaurants_data.each do |restaurant_data|
+      restaurants_data.each do |restaurant_data|        
         restaurant = Restaurant.new(restaurant_data.except(:menus))
 
         if restaurant.save
-          @logs << "Restaurant #{restaurant.name}} successfully created. ID: #{restaurant.id}}"
+          @logger.log("Create Restaurant", ["Restaurant #{restaurant.name} successfully created"], { id: restaurant.id })
         else
-          @logs << "Failed to create Restaurant. #{restaurant.errors.full_messages.join(", ")}"
+          @logger.log("Error", ["Failed to create Restaurant. #{restaurant.errors.full_messages.join(", ")}"])
           return false
         end
         
-        return create_menus(restaurant_data[:menus], restaurant.id)        
+        success = create_menus(restaurant_data[:menus], restaurant.id)   
+        return success unless success     
       end
+
+      true
     end
 
     def create_menus(menus_data, restaurant_id)
@@ -71,29 +72,31 @@ module Restaurants
         menu = Menu.new(menu_data.except(:menu_items).merge(restaurant_id: restaurant_id))
 
         if menu.save
-          @logs << "Menu #{menu.name}} successfully created. ID: #{menu.id}}"
+          @logger.log("Create Menu", ["Menu #{menu.name} successfully created"], { id: menu.id })
         else
-          @logs << "Failed to create Menu. #{menu.errors.full_messages.join(", ")}"
+          @logger.log("Error", ["Failed to create Menu. #{menu.errors.full_messages.join(", ")}"])
           return false
         end
 
-        return create_menu_items(menu_data[:menu_items], menu.id)        
+        success = create_menu_items(menu_data[:menu_items], menu.id)
+        return success unless success         
       end
     end
 
     def create_menu_items(menu_items_data, menu_id)
       menu_items_data.each do |menu_item_data|
+        messages = []
         menu_item = MenuItem.find_by_name(menu_item_data[:name])
 
         if menu_item.present?
-          @logs << "There's already an menu item with this name."
-          @logs << "The existing object will be used instead of creating a new one."
+          messages << "There's already an menu item with this name."
+          messages << "The existing object will be used instead of creating a new one."
         else
           menu_item = MenuItem.new(menu_item_data)
           if menu_item.save
-            @logs << "MenuItem #{menu_item.name}} successfully created. ID: #{menu_item.id}}"
+            @logger.log("Create MenuItem", ["MenuItem #{menu_item.name}} successfully created."], { id: menu_item.id })
           else
-            @logs << "Failed to create MenuItem. #{menu_item.errors.full_messages.join(", ")}"
+            @logger.log("Error", ["Failed to create MenuItem. #{menu_item.errors.full_messages.join(", ")}"])
             return false
           end
         end  
@@ -102,17 +105,18 @@ module Restaurants
         
         begin 
           if menu_item_menu.save
-            logs << "Association Menu with MenuItem successfully created."
+            messages << "Association Menu with MenuItem successfully created."
+            @logger.log("Create Association ", messages)
           else
-            logs << "Fail to associate Menu with MenuItem. #{menu_item_menu.errors.full_messages.join(", ")}"
+            messages << "Fail to associate Menu with MenuItem. #{menu_item_menu.errors.full_messages.join(", ")}"
+            @logger.log("Error", messages)
             return false
           end
         rescue ActiveRecord::RecordNotUnique
-          logs << "Association Menu with MenuItem alredy exists"
+          messages << "This MenuItem is already associated with the Menu"
+          @logger.log("Create Association ", messages)
         end
       end
-      true
-
     end
   end
 end
