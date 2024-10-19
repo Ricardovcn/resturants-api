@@ -18,7 +18,7 @@ class MenuItem < ApplicationRecord
     if value.present? && value.is_a?(Numeric) && value >= 0
       self.price_in_cents = (BigDecimal(value.to_s) * 100).round
     else
-      raise ArgumentError, "Invalid price value"
+      raise ArgumentError,  "Invalid price value for MenuItem. Expected a non-negative numeric value, but received: #{value}."
     end
   end
 
