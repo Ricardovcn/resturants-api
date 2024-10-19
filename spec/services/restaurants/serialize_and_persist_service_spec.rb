@@ -134,27 +134,43 @@ module Restaurants
           it 'returns an array of logs' do
             result = subject.call
             expect(result).to be_present
-            expect(result).to be_an_instance_of(Array)
+            expect(result).to be_an_instance_of(Hash)
+            expect(result[:success]).to be(true)
+            expect(result[:logs]).to be_present
+            expect(result[:logs]).to  be_an_instance_of(Array)
           end
         end
 
         context 'when the restaurant have more than one menu' do        
           subject { described_class.new(valid_restaurant_multiple_menus) }
 
-          it 'returns an array of logs' do          
+          it 'returns an array of logs' do        
+            expect(restaurant_double).to receive(:save).once   
+            expect(menu_double).to receive(:save).twice   
+            
             result = subject.call
+            
             expect(result).to be_present
-            expect(result).to be_an_instance_of(Array)
+            expect(result).to be_an_instance_of(Hash)
+            expect(result[:success]).to be(true)
+            expect(result[:logs]).to be_present
+            expect(result[:logs]).to  be_an_instance_of(Array)
           end
         end
 
         context 'when the restaurant has extra valid attributes' do        
           subject { described_class.new(valid_restaurant_extra_attributes) }
 
-          it 'returns an array of logs' do          
+          it 'returns an array of logs' do       
+            expect(restaurant_double).to receive(:save).once   
+            
             result = subject.call
+
             expect(result).to be_present
-            expect(result).to be_an_instance_of(Array)
+            expect(result).to be_an_instance_of(Hash)
+            expect(result[:success]).to be(true)
+            expect(result[:logs]).to be_present
+            expect(result[:logs]).to  be_an_instance_of(Array)
           end
         end
 
@@ -166,6 +182,12 @@ module Restaurants
             expect(menu_double).not_to  receive(:save)
             expect(menu_item_double).not_to  receive(:save)       
             result = subject.call
+
+            expect(result).to be_present
+            expect(result).to be_an_instance_of(Hash)
+            expect(result[:success]).to be(true)
+            expect(result[:logs]).to be_present
+            expect(result[:logs]).to  be_an_instance_of(Array)
           end
         end
 
@@ -176,6 +198,12 @@ module Restaurants
             expect(menu_double).to receive(:save).once  
             expect(menu_item_double).not_to  receive(:save)        
             result = subject.call
+
+            expect(result).to be_present
+            expect(result).to be_an_instance_of(Hash)
+            expect(result[:success]).to be(true)
+            expect(result[:logs]).to be_present
+            expect(result[:logs]).to  be_an_instance_of(Array)
           end
         end
       end
