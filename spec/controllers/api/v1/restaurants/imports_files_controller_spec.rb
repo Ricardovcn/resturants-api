@@ -48,27 +48,31 @@ RSpec.describe Api::V1::Restaurants::ImportFilesController, type: :controller do
 
     context "gets a invalid json file" do
       let(:error_message) { "error message" }
-      it 'returns a 422 code and an error message' do
+      it 'returns a 200 code and the result hash' do
         mock_service = instance_double(::Restaurants::SerializeAndPersistService)
         allow(::Restaurants::SerializeAndPersistService).to receive(:new).and_return(mock_service)
-        allow(mock_service).to receive(:call).and_raise(ArgumentError.new(error_message))
-
-        post :import_json, params: { file: valid_file }
-
-        expect(response).to have_http_status :unprocessable_entity
-        expect(JSON.parse(response.body)["message"]).to eql(error_message)
-      end
-    end
-
-    context "gets a invalid json file" do
-      it 'returns a 204 code' do
-        mock_service = instance_double(::Restaurants::SerializeAndPersistService)
-        allow(::Restaurants::SerializeAndPersistService).to receive(:new).and_return(mock_service)
-        allow(mock_service).to receive(:call).and_return({})
+        allow(mock_service).to receive(:call).and_return({success: false, logs: []})
 
         post :import_json, params: { file: valid_file }
 
         expect(response).to have_http_status :ok
+        expect(JSON.parse(response.body)["success"]).to eql(false)
+        expect(JSON.parse(response.body)["logs"]).not_to be_nil
+      end
+    end
+
+    context "gets a invalid json file" do
+      it 'returns a 200 code and the result hash' do
+        mock_service = instance_double(::Restaurants::SerializeAndPersistService)
+        allow(::Restaurants::SerializeAndPersistService).to receive(:new).and_return(mock_service)
+        allow(mock_service).to receive(:call).and_return({success: true, logs: []})
+
+        post :import_json, params: { file: valid_file }
+
+        expect(response).to have_http_status :ok
+        expect(JSON.parse(response.body)["success"]).to eql(true)
+        expect(JSON.parse(response.body)["logs"]).not_to be_nil
+
       end
     end
   end
