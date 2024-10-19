@@ -9,8 +9,6 @@ class Api::V1::Restaurants::ImportFilesController < ApplicationController
 
   def import_json
     render json: ::Restaurants::SerializeAndPersistService.new(@json_data).call
-  rescue ArgumentError => error
-    render_error(error.message, :unprocessable_entity)
   rescue StandardError => error
     logger.error "Error importing restaurants: #{error.message}"
     logger.error error.backtrace[0..10].join("\n")
