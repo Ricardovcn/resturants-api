@@ -1,7 +1,7 @@
 class MenuItem < ApplicationRecord
   has_many :menu_item_menus
   has_many :menus, through: :menu_item_menus
-  belongs_to :restaurant
+  belongs_to :restaurant, class_name: "Restaurant", foreign_key: "restaurant_id"
 
   before_destroy :remove_menu_item_associations
 

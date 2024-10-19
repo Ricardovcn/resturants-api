@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 2024_10_19_132215) do
     t.integer "calories"
     t.string "allergens", default: [], array: true
     t.bigint "restaurant_id"
-    t.index ["name"], name: "index_menu_items_on_name", unique: true
     t.index ["restaurant_id", "name"], name: "index_menu_items_on_restaurant_id_and_name", unique: true
     t.index ["restaurant_id"], name: "index_menu_items_on_restaurant_id"
   end
