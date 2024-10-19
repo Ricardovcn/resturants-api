@@ -13,7 +13,7 @@ module Restaurants
       let(:invalid_restaurant_missing_name) { INVALID_RESTAURANT_MISSING_NAME }
       let(:invalid_menu_missing_name) { INVALID_MENU_MISSING_NAME }
       let(:invalid_restaurant_extra_attribute) { INVALID_RESTAURANT_EXTRA_ATTRIBUTES }
-      let(:invalid_menu_item_invalid_price) { VALID_RESTAURANT_MISSING_MENUS }
+      let(:invalid_menu_item_invalid_price) { INVALID_MENU_ITEM_INVALID_PRICE }
 
       let(:valid_restaurant_complete) { VALID_RESTAURANT_COMPLETE }
       let(:valid_restaurant_multiple_menus) { VALID_RESTAURANT_MULTIPLE_MENUS }
@@ -76,28 +76,6 @@ module Restaurants
         end
       end
 
-      context 'when the restaurant is missing required parameters' do
-        subject { described_class.new(invalid_restaurant_missing_name) }
-
-        it 'returns a Failed result and a array of logs' do
-          result = subject.call
-
-          expect(result[:success]).to be(false) 
-          expect(result[:logs].last[:messages]).to include("Failed to create Restaurant. Name can't be blank")
-        end
-      end
-
-      context 'when the menu is missing required parameters' do
-        subject { described_class.new(invalid_menu_missing_name) }
-
-        it 'returns a Failed result and a array of logs' do
-          result = subject.call
-
-          expect(result[:success]).to be(false) 
-          expect(result[:logs].last[:messages]).to include("Failed to create Menu. Name can't be blank")
-        end
-      end
-
       context 'when the restaurant has an extra and invalid attribute' do
         subject { described_class.new(invalid_restaurant_extra_attribute) }
 
@@ -128,6 +106,47 @@ module Restaurants
           allow(menu_item_menu_double).to receive(:save).and_return(true)
         end
 
+        context 'when the restaurant is missing required parameters' do
+          subject { described_class.new(invalid_restaurant_missing_name) }
+          
+          it 'returns a Failed result and a array of logs' do
+            allow(restaurant_double).to receive(:save).and_return(false)
+
+            result = subject.call
+  
+            expect(result[:success]).to be(false) 
+            expect(result[:logs].last[:messages]).to include("Failed to create Restaurant . ")
+          end
+        end
+
+        context 'when the menu is missing required parameters' do
+          subject { described_class.new(invalid_menu_missing_name) }
+  
+          it 'returns a Failed result and a array of logs' do
+            allow(menu_double).to receive(:save).and_return(false)
+
+            result = subject.call
+  
+            expect(result[:success]).to be(false)             
+            expect(result[:logs][-2][:messages]).to include("Failed to create Menu . ")
+            expect(result[:logs].last[:messages]).to include("Rolling back database changes.")
+          end
+        end
+
+        context 'when a object gets an invalid argument parameters' do
+          subject { described_class.new(invalid_menu_item_invalid_price) }
+          let(:error_message) { "error_message" } 
+
+          it 'returns a Failed result and a array of logs' do
+            allow(MenuItem).to receive(:new).and_raise(ArgumentError.new(error_message))
+
+            result = subject.call         
+  
+            expect(result[:success]).to be(false) 
+            expect(result[:logs].last[:messages]).to include("Rolling back database changes due to error (#{ error_message }).")
+          end
+        end
+        
         context 'when the input data is valid' do        
           subject { described_class.new(valid_restaurant_complete) }
 

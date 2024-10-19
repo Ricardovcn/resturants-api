@@ -16,6 +16,7 @@ module Restaurants
       ActiveRecord::Base.transaction do
         success = create_restaurants(@data[:restaurants])
 
+        @logger.log("Rollback", "Rolling back database changes.") if !success && @logger.all_logs.size > 1 
         return { success: success, logs: @logger.all_logs }
       end
     rescue ArgumentError => e
@@ -57,7 +58,7 @@ module Restaurants
         if restaurant.save
           @logger.log("Create Restaurant", ["Restaurant #{restaurant.name} successfully created"], { id: restaurant.id })
         else
-          @logger.log("Error", ["Failed to create Restaurant. #{restaurant.errors.full_messages.join(", ")}"])
+          @logger.log("Error", ["Failed to create Restaurant #{restaurant_data[:name]}. #{restaurant.errors.full_messages.join(", ")}"])
           return false
         end
         
@@ -75,7 +76,7 @@ module Restaurants
         if menu.save
           @logger.log("Create Menu", ["Menu #{menu.name} successfully created"], { id: menu.id })
         else
-          @logger.log("Error", ["Failed to create Menu. #{menu.errors.full_messages.join(", ")}"])
+          @logger.log("Error", ["Failed to create Menu #{menu_data[:name]}. #{menu.errors.full_messages.join(", ")}"])
           return false
         end
 
@@ -96,7 +97,7 @@ module Restaurants
           if menu_item.save
             messages << "MenuItem #{menu_item.name} successfully created."
           else
-            @logger.log("Error", ["Failed to create MenuItem #{menu_item.name}. #{menu_item.errors.full_messages.join(", ")}"])
+            @logger.log("Error", ["Failed to create MenuItem #{menu_item_data[:name]}. #{menu_item.errors.full_messages.join(", ")}"])
             return false
           end
         end  
