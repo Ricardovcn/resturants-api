@@ -17,7 +17,7 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   end
 
   def create
-    existing_object = MenuItem.find_by_name(permitted_params["name"])
+    existing_object = @restaurant.menu_items.find_by_name(permitted_params["name"])
     
     return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
 
@@ -28,6 +28,8 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
     else
       render_error(@menu_item.errors.full_messages.join(", "), :unprocessable_entity)
     end
+  rescue ArgumentError => e
+    render_error(e.message, :unprocessable_entity)
   end
 
   def update

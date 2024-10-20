@@ -7,8 +7,10 @@ class MenuItem < ApplicationRecord
 
   validates :price_in_cents, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :name, presence: true,  uniqueness: { scope: :restaurant_id, message: "must be unique within a restaurant" }, length: { maximum: 100 }
-  validates :description, length: { maximum: 500 }, allow_blank: true
+  validates :description, length: { maximum: 500 }, format: { without: /\A\s*\z/, message: "must contain non-whitespace characters" }, allow_nil: true
+  validates :category, length: { maximum: 50 }, format: { without: /\A\s*\z/, message: "must contain non-whitespace characters" }, allow_nil: true
   validates :calories, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :is_available, inclusion: { in: [true, false], message: "must be true or false" }, allow_nil: false
 
   validate :validate_ingredients
   validate :validate_allergens
