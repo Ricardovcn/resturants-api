@@ -72,7 +72,6 @@ RSpec.describe Api::V1::Restaurants::ImportFilesController, type: :controller do
         expect(response).to have_http_status :ok
         expect(JSON.parse(response.body)["success"]).to eql(true)
         expect(JSON.parse(response.body)["logs"]).not_to be_nil
-
       end
     end
   end

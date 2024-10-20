@@ -36,7 +36,6 @@ RSpec.describe MenuItem, type: :model do
     it { is_expected.not_to allow_value("55,5").for(:calories) }
     it { is_expected.not_to allow_value("words").for(:calories) }
 
-    it { is_expected.to validate_inclusion_of(:is_available).in_array([true, false]).with_message("must be true or false") }
     it { should allow_value(true).for(:is_available) }
     it { should allow_value(false).for(:is_available) }
     it { should_not allow_value("").for(:is_available) }

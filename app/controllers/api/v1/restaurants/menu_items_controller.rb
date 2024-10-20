@@ -33,6 +33,10 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   end
 
   def update
+    existing_object = @restaurant.menu_items.find_by_name(permitted_params["name"])
+    
+    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
+
     if @menu_item.update(permitted_params)
       render json: @menu_item
     else

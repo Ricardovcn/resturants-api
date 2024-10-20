@@ -10,7 +10,7 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   ].freeze
   
   def index
-    render json: Menu.where(restaurant_id: @restaurant.id)
+    render json: @restaurant.menus
   end
 
   def show
