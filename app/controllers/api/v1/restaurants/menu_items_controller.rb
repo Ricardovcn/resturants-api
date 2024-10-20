@@ -1,8 +1,9 @@
 class Api::V1::Restaurants::MenuItemsController < ApplicationController
   before_action :set_restaurant
-  before_action :set_menu_item, only: [:show, :update, :destroy]
-  before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
+  before_action :validate_empty_body, only: [:create, :update]
+  before_action :set_menu_item, only: [:show, :update, :destroy]
+  before_action :check_for_duplicated_menu_items, only: [:create, :update]
 
   REQUIRED_PARAMS = [
     "name"
@@ -17,10 +18,6 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   end
 
   def create
-    existing_object = @restaurant.menu_items.find_by_name(permitted_params["name"])
-    
-    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
-
     @menu_item = MenuItem.new(permitted_params)
         
     if @menu_item.save
@@ -33,10 +30,6 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   end
 
   def update
-    existing_object = @restaurant.menu_items.find_by_name(permitted_params["name"])
-    
-    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
-
     if @menu_item.update(permitted_params)
       render json: @menu_item
     else
@@ -51,6 +44,12 @@ class Api::V1::Restaurants::MenuItemsController < ApplicationController
   end
 
   private 
+
+  def check_for_duplicated_menu_items
+    existing_object = @restaurant.menu_items.find_by_name(permitted_params["name"])
+    
+    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
+  end
 
   def validate_empty_body
     render_error("No menu item attributes was passed as parameters.", :bad_request) if permitted_params.except(:restaurant_id).blank?
