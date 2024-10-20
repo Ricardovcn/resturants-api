@@ -15,7 +15,7 @@ module Restaurants
       validate_data_format
       ActiveRecord::Base.transaction do
         success = create_restaurants(@data[:restaurants])
-
+        
         @logger.log("Rollback", "Rolling back database changes.") if !success && @logger.all_logs.size > 1 
         return { success: success, logs: @logger.all_logs }
       end
@@ -42,9 +42,9 @@ module Restaurants
       
       @data[:restaurants].each do |restaurant| 
         validate_permitted_attributes(restaurant, ALLOWED_RESTAURANT_ATTRIBUTES, "Restaurant")
-        restaurant[:menus].each do |menu| 
+        restaurant[:menus]&.each do |menu| 
           validate_permitted_attributes(menu, ALLOWED_MENU_ATTRIBUTES, "Menu")
-          menu[:menu_items].each do |menu_item| 
+          menu[:menu_items]&.each do |menu_item| 
             validate_permitted_attributes(menu_item, ALLOWED_MENU_ITEM_ATTRIBUTES, "MenuItem")
           end
         end
@@ -63,7 +63,7 @@ module Restaurants
         end
         
         @restaurant_created_menu_items = []
-        success = create_menus(restaurant_data[:menus], restaurant)   
+        success = restaurant_data[:menus].present? ? create_menus(restaurant_data[:menus], restaurant) : true
         return success unless success     
       end
 
@@ -81,7 +81,7 @@ module Restaurants
           return false
         end
 
-        success = create_menu_items(menu_data[:menu_items], menu.id, restaurant)
+        success = menu_data[:menu_items].present? ? create_menu_items(menu_data[:menu_items], menu.id, restaurant) : true
         return success unless success         
       end
     end

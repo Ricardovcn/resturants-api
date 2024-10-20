@@ -5,7 +5,7 @@ class MenuItem < ApplicationRecord
 
   before_destroy :remove_menu_item_associations
 
-  validates :price_in_cents, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :price_in_cents, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :name, presence: true,  uniqueness: { scope: :restaurant_id, message: "must be unique within a restaurant" }, length: { maximum: 100 }
   validates :description, length: { maximum: 500 }, format: { without: /\A\s*\z/, message: "must contain non-whitespace characters" }, allow_nil: true
   validates :category, length: { maximum: 50 }, format: { without: /\A\s*\z/, message: "must contain non-whitespace characters" }, allow_nil: true
