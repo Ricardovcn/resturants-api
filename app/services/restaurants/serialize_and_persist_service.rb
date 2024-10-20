@@ -62,6 +62,7 @@ module Restaurants
           return false
         end
         
+        @restaurant_created_menu_items = []
         success = create_menus(restaurant_data[:menus], restaurant)   
         return success unless success     
       end
@@ -88,7 +89,7 @@ module Restaurants
     def create_menu_items(menu_items_data, menu_id, restaurant)
       menu_items_data.each do |menu_item_data|
         messages = []
-        menu_item = restaurant.reload.menu_items.find_by_name(menu_item_data[:name])
+        menu_item = @restaurant_created_menu_items.find { |create_menu_item| create_menu_item.name == menu_item_data[:name]}
                         
         if menu_item.present?
           messages = ["MenuItem #{menu_item_data[:name]} already exists for the restaurant #{restaurant[:name]}.", "The existing object will be used instead of creating a new one."] 
@@ -96,6 +97,7 @@ module Restaurants
           menu_item = MenuItem.new(menu_item_data.merge(restaurant_id: restaurant.id))
           if menu_item.save
             messages << "MenuItem #{menu_item.name} successfully created."
+            @restaurant_created_menu_items << menu_item.clone
           else
             @logger.log("Error", ["Failed to create MenuItem #{menu_item_data[:name]}. #{menu_item.errors.full_messages.join(", ")}"])
             return false
