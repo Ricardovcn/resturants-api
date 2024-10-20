@@ -1,5 +1,4 @@
 class Api::V1::Restaurants::RestaurantsController < ApplicationController
-  
   before_action :set_restaurant, only: [:show, :update, :destroy, :menus]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
@@ -40,9 +39,7 @@ class Api::V1::Restaurants::RestaurantsController < ApplicationController
     head :no_content
   end
 
-  def menus
-    render json: @restaurant.menus
-  end
+
 
   private
 
@@ -69,6 +66,6 @@ class Api::V1::Restaurants::RestaurantsController < ApplicationController
     return unless params['id'].present?
 
     @restaurant = Restaurant.find_by_id(params['id'])
-    render_error("Invalid restaurant id!", :not_found) if @restaurant.nil?
+    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.!", :not_found) if @restaurant.nil?
   end
 end
