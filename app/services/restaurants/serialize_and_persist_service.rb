@@ -3,7 +3,7 @@ require_relative '../../utils/event_logger.rb'
 module Restaurants
   class SerializeAndPersistService
     ALLOWED_RESTAURANT_ATTRIBUTES = [:name, :menus, :description, :phone_number, :email].freeze
-    ALLOWED_MENU_ATTRIBUTES = [:name, :menu_items, :description, :is_acive].freeze
+    ALLOWED_MENU_ATTRIBUTES = [:name, :menu_items, :description, :is_active].freeze
     ALLOWED_MENU_ITEM_ATTRIBUTES = [:name, :price, :category, :description, :ingredients, :is_available, :calories, :allergens].freeze
 
     def initialize(data)

@@ -54,7 +54,7 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:name, :description, :is_acive, :restaurant_id)
+    params.permit(:name, :description, :is_active, :restaurant_id)
   end
 
   def set_menu
