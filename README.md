@@ -102,5 +102,22 @@ Execute the test suite with RSpec:
   ```bash
   rails s
   ```
-2.Use Postman or any HTTP client to test the endpoints listed under each level.
+### Testing the Application
+To easily test the API endpoint, you can use the provided Postman collection. Download it [here](./Restaurants.postman_collection.json).
+
+## Testing the Conversion Tool
+
+### How to Run the Conversion Tool
+
+1. **Prepare Your JSON File**: Ensure you have a json file ready.
+
+2. **Run the Import Command**: You can execute the conversion tool by sending a `POST` request to the import endpoint. 
+    Here’s how to do it:
+   
+   - **Endpoint**: `POST /api/v1/restaurants/import`
+   - **Request Body**: Make sure to include the JSON file in the request body as you can see in the image bellow.
+![image](https://github.com/user-attachments/assets/22901b12-a535-4836-b2cf-de670b8d24a6)
+
+
+
 
