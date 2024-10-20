@@ -1,12 +1,10 @@
 class Api::V1::MenuItemsController < ApplicationController
   before_action :set_menu_item, only: [:show, :update, :destroy]
-  before_action :set_menu, only: [:update, :create]
   before_action :validate_empty_body, only: [:create, :update]
   before_action :required_params, only: :create
 
   REQUIRED_PARAMS = [
-    "name",
-    "menu_id"
+    "name"
   ].freeze
   
   def index
@@ -18,12 +16,16 @@ class Api::V1::MenuItemsController < ApplicationController
   end
 
   def create
+    existing_object = MenuItem.find_by_name(permitted_params["name"])
+    
+    return render_error("A MenuItem with this name already exists.", :conflict, {existing_object: existing_object}) if existing_object.present? 
+
     @menu_item = MenuItem.new(permitted_params)
         
     if @menu_item.save
       render json: @menu_item
     else
-      render json: @menu_item.errors, status: :unprocessable_entity
+      render_error(@menu_item.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 
@@ -31,12 +33,13 @@ class Api::V1::MenuItemsController < ApplicationController
     if @menu_item.update(permitted_params)
       render json: @menu_item
     else
-      render json: @menu_item.errors, status: :unprocessable_entity
+      render_error(@menu_item.errors.full_messages.join(", "), :unprocessable_entity)
     end
   end
 
   def destroy
     @menu_item.destroy
+
     head :no_content
   end
 
@@ -55,7 +58,6 @@ class Api::V1::MenuItemsController < ApplicationController
   def permitted_params
     params.permit(
       :name, 
-      :menu_id, 
       :price_in_cents,
       :category,
       :description,
@@ -69,12 +71,5 @@ class Api::V1::MenuItemsController < ApplicationController
   def set_menu_item
     @menu_item = MenuItem.find_by_id(params['id'])
     render_error("Invalid menu item id!", :not_found) if @menu_item.nil?
-  end
-
-  def set_menu
-    return unless params['menu_id'].present?
-
-    @menu = Menu.find_by_id(params['menu_id'])
-    render_error("Invalid menu id!", :not_found) if @menu.nil?
   end
 end

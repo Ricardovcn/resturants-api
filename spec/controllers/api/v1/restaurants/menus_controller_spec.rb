@@ -1,22 +1,25 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::MenusController, type: :controller do
+RSpec.describe Api::V1::Restaurants::MenusController, type: :controller do
   let(:new_menu_name) { "New Menu Name" }
+  let(:too_big_name) { SecureRandom.hex(51) } 
+  let(:too_big_description) { SecureRandom.hex(251) } 
 
   describe "GET /index" do
     it 'returns a 200 code and an array of menus' do
-      get :index
+      get :index, params: { id: 5, restaurant_id: 1}
 
       expect(response).to have_http_status :ok
-      expect(JSON.parse(response.body)).to be_an_instance_of(Array)
-      expect(JSON.parse(response.body).size).to eql(Menu.all.size)
+      json_response = JSON.parse(response.body)
+      expect(json_response).to be_an_instance_of(Array)
+      expect(json_response.size).to eql(Menu.where(restaurant_id: 1).size)
     end
   end
 
   describe "GET /show" do
     context "gets an invalid ID as parameter" do
       it 'returns a 404 code and an error message' do
-        get :show, params: { id: 5}
+        get :show, params: { id: 5,  restaurant_id: 1}
         
         expect(response).to have_http_status :not_found
         expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
@@ -25,7 +28,7 @@ RSpec.describe Api::V1::MenusController, type: :controller do
 
     context "gets a valid ID as parameter" do
       it 'returns a 200 code and the requested menu' do
-        get :show, params: { id: 1}
+        get :show, params: { id: 1, restaurant_id: 2}
 
         expect(response).to have_http_status :ok
         expect(JSON.parse(response.body)["id"]).to be(1)
@@ -36,29 +39,41 @@ RSpec.describe Api::V1::MenusController, type: :controller do
   describe "POST /create" do
     context "one of the required parameters is missing" do
       it 'returns a 400 code and an error message' do
-        post :create, params: { description: "description"}
+        post :create, params: { description: "description", restaurant_id: 1}
         
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to include("Required param missing")
       end
     end
 
-    context "gets no parameter" do
-      it 'returns a 400 code and an error message' do
-        post :create, params: {}
-        
-        expect(response).to have_http_status :bad_request
-        expect(JSON.parse(response.body)["message"]).to eql("No menu attributes was passed as parameters.")
+    context "gets a invalid name" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: too_big_name, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Name is too long")
+      end
+    end
+
+    context "gets a invalid description" do
+      it 'returns a 409 code an an error message' do
+        post :create, params: { name: new_menu_name, description: too_big_description, restaurant_id: 1}
+
+        expect(response).to have_http_status :unprocessable_entity
+        json_response = JSON.parse(response.body)
+        expect(json_response["message"]).to include("Description is too long")
       end
     end
 
     context "gets valid parameters" do
       it 'returns a 200 code and the created menu' do
-        post :create, params: { name: "Menu Name 3"}
+        post :create, params: { name: "Menu Name 3", restaurant_id: 1}
 
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)["id"]).to be_present
-        expect(JSON.parse(response.body)["name"]).to be_present
+        json_response = JSON.parse(response.body)
+        expect(json_response["id"]).to be_present
+        expect(json_response["name"]).to be_present
       end
     end
   end
@@ -66,16 +81,16 @@ RSpec.describe Api::V1::MenusController, type: :controller do
   describe "PUT /update" do
     context "gets an invalid ID as parameter" do
       it 'returns a 404 code and an error message' do
-        put :update, params: { id: 10, name: "New Menu Name"}
+        put :update, params: { id: 10, name: "New Menu Name", restaurant_id: 1}
 
         expect(response).to have_http_status :not_found
         expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
       end
     end
 
-    context "gets no parameters" do
+    context "gets no update parameters" do
       it 'returns a 400 code and an error message' do
-        put :update, params: { id: 2 }
+        put :update, params: { id: 1, restaurant_id: 2 }
 
         expect(response).to have_http_status :bad_request
         expect(JSON.parse(response.body)["message"]).to eql("No menu attributes was passed as parameters.")
@@ -84,11 +99,12 @@ RSpec.describe Api::V1::MenusController, type: :controller do
 
     context "gets valid parameters" do
       it 'returns a 200 code and the updated menu' do
-        put :update, params: { id: 2, name: new_menu_name}
+        put :update, params: { id: 1, name: new_menu_name, restaurant_id: 2 }
         
         expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)["id"]).to be(2)
-        expect(JSON.parse(response.body)["name"]).to eql(new_menu_name)
+        json_response = JSON.parse(response.body) 
+        expect(json_response["id"]).to be(1)
+        expect(json_response["name"]).to eql(new_menu_name)
       end
     end
   end
@@ -96,7 +112,7 @@ RSpec.describe Api::V1::MenusController, type: :controller do
   describe "DELETE /destroy" do
     context "gets an invalid ID as parameter" do
       it 'returns a 400 code and an error message' do
-        delete :destroy, params: { id: 99}
+        delete :destroy, params: { id: 99, restaurant_id: 1 }
         
         expect(response).to have_http_status :not_found
         expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
@@ -105,30 +121,11 @@ RSpec.describe Api::V1::MenusController, type: :controller do
 
     context "gets a valid ID as parameter" do
       it 'returns a 204 code' do
-        delete :destroy, params: { id: 2}        
+        table_size_after_delete = Menu.all.size - 1
+        delete :destroy, params: { id: 1, restaurant_id: 2 }        
 
         expect(response).to have_http_status :no_content
-      end
-    end
-  end
-
-  describe "GET /menu_items" do
-    context "gets an invalid menu ID as parameter" do
-      it 'returns a 400 code and an error message' do
-        get :menu_items, params: { id: 99}
-        
-        expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Invalid menu id!")
-      end
-    end
-
-    context "gets a valid menu ID as parameter" do
-      it 'returns a 200 code and an array of menu items' do
-        get :menu_items, params: { id: 2}        
-
-        expect(response).to have_http_status :ok
-        expect(JSON.parse(response.body)).to be_an_instance_of(Array)
-        expect(JSON.parse(response.body).size).to eql(Menu.find_by(id: 2).menu_items.size)
+        expect(Menu.all.size).to eql(table_size_after_delete)
       end
     end
   end
