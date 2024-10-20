@@ -15,7 +15,7 @@ RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller 
 
         expect(response).to have_http_status :not_found
         json_response = JSON.parse(response.body)
-        expect(json_response["message"]).to include("Restaurant ID not found. Please check that the restaurant exists in the system.!")
+        expect(json_response["message"]).to include("Restaurant ID not found. Please check that the restaurant exists in the system.")
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller 
 
         expect(response).to have_http_status :not_found
         json_response = JSON.parse(response.body)
-        expect(json_response["message"]).to include("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!")
+        expect(json_response["message"]).to include("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.")
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller 
 
         expect(response).to have_http_status :not_found
         json_response = JSON.parse(response.body)
-        expect(json_response["message"]).to include("Restaurant ID not found. Please check that the restaurant exists in the system.!")
+        expect(json_response["message"]).to include("Restaurant ID not found. Please check that the restaurant exists in the system.")
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe Api::V1::Restaurants::MenuItemMenusController, type: :controller 
 
         expect(response).to have_http_status :not_found
         json_response = JSON.parse(response.body)
-        expect(json_response["message"]).to include("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!")
+        expect(json_response["message"]).to include("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.")
       end
     end
 

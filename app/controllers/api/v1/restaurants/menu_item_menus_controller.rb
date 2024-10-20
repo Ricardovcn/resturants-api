@@ -47,11 +47,11 @@ class Api::V1::Restaurants::MenuItemMenusController < ApplicationController
 
   def set_menu
     @menu =  @restaurant.menus.find_by_id(params['menu_id'])
-    render_error("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!", :not_found) if @menu.nil?
+    render_error("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.", :not_found) if @menu.nil?
   end
 
   def set_restaurant   
     @restaurant = Restaurant.find_by_id(params['restaurant_id'])
-    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.!", :not_found) if @restaurant.nil?
+    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.", :not_found) if @restaurant.nil?
   end
 end

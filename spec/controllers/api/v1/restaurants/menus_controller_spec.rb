@@ -34,7 +34,7 @@ RSpec.describe Api::V1::Restaurants::MenusController, type: :controller do
         get :show, params: { id: 20,  restaurant_id: restaurant.id}
         
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.")
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Api::V1::Restaurants::MenusController, type: :controller do
         put :update, params: { id: 10, name: "New Menu Name", restaurant_id: 1}
 
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.")
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe Api::V1::Restaurants::MenusController, type: :controller do
         delete :destroy, params: { id: 99, restaurant_id: 1 }
         
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.")
       end
     end
 

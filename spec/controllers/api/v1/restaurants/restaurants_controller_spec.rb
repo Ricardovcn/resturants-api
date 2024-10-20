@@ -29,7 +29,7 @@ RSpec.describe Api::V1::Restaurants::RestaurantsController, type: :controller do
         get :show, params: { id: 5}
         
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.")
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Api::V1::Restaurants::RestaurantsController, type: :controller do
         put :update, params: { id: 10, name: "New Restaurant Name"}
 
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.")
       end
     end
 
@@ -146,7 +146,7 @@ RSpec.describe Api::V1::Restaurants::RestaurantsController, type: :controller do
         delete :destroy, params: { id: restaurants.first.id}
         
         expect(response).to have_http_status :not_found
-        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.!")
+        expect(JSON.parse(response.body)["message"]).to eql("Restaurant ID not found. Please check that the restaurant exists in the system.")
       end
     end
 

@@ -66,6 +66,6 @@ class Api::V1::Restaurants::RestaurantsController < ApplicationController
     return unless params['id'].present?
 
     @restaurant = Restaurant.find_by_id(params['id'])
-    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.!", :not_found) if @restaurant.nil?
+    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.", :not_found) if @restaurant.nil?
   end
 end
