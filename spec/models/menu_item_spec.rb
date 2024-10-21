@@ -22,7 +22,7 @@ RSpec.describe MenuItem, type: :model do
     it { is_expected.to allow_value("Appetizer").for(:category) }
     it { is_expected.not_to allow_value("   ").for(:category).with_message("must contain non-whitespace characters") }
     
-    it { is_expected.to validate_numericality_of(:price_in_cents).only_integer.is_greater_than(0).allow_nil }
+    it { is_expected.to validate_numericality_of(:price_in_cents).only_integer.is_greater_than_or_equal_to(0).allow_nil }
     it { is_expected.to allow_value(55).for(:price_in_cents) }
     it { is_expected.to allow_value(nil).for(:price_in_cents) }
     it { is_expected.not_to allow_value(55.8).for(:price_in_cents) }

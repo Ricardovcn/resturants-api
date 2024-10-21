@@ -10,7 +10,7 @@ RSpec.describe Api::V1::Restaurants::RestaurantsController, type: :controller do
 
   describe "GET /index" do
     it 'returns a 200 code and an array of restaurants' do
-      allow(Restaurant).to receive(:all).and_return(restaurants)
+      allow(Restaurant).to receive(:page).and_return(restaurants)
 
       get :index
             
