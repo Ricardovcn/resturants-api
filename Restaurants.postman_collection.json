@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2409d25f-7968-479f-b8ac-75406c9c94a2",
+		"_postman_id": "0c8861cf-f428-486c-9a51-c14577172afd",
 		"name": "Restaurants",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27102949"
@@ -608,7 +608,7 @@
 						"restaurants"
 					]
 				},
-				"description": "### Description\nThis endpoint returns the list of restaurants."
+				"description": "### Description\n\nThis endpoint returns the list of restaurants.  \nA simple pagination was implemented for it.  \n  \nPath Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `page` | string | No| The page number. Default value is 1. |\n| `per_page` | string | No| The number of items per page. The default value is 25. |"
 			},
 			"response": []
 		},
@@ -641,7 +641,7 @@
 						"1"
 					]
 				},
-				"description": "### Description  \nThis endpoint returns a the requested restaurant data.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the restaurant to update |"
+				"description": "### Description\nThis endpoint returns the requested restaurant data.\n\n### Path Parameters:\n\n| **Parameter** | **Type** | **Required** | **Description** |\n| --- | --- | --- | --- |\n| `id` | string | Yes | The unique ID of the restaurant to update |"
 			},
 			"response": []
 		},
