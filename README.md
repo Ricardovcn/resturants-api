@@ -114,7 +114,80 @@ To easily test the API endpoint, you can use the provided Postman collection. Do
 
 ### How to Run the Conversion Tool
 
-1. **Prepare Your JSON File**: Ensure you have a json file ready.
+1. **Prepare Your JSON File**: Ensure you have a json file ready
+  - Example of valid file content:
+  ```json
+  {
+    "restaurants":[
+       {
+          "name":"Poppo's Cafe",
+          "menus":[
+             {
+                "name":"lunch",
+                "menu_items":[
+                   {
+                      "name":"Burger",
+                      "price":9.00
+                   },
+                   {
+                      "name":"Small Salad",
+                      "price":5.00
+                   }
+                ]
+             },
+             {
+                "name":"dinner",
+                "menu_items":[
+                   {
+                      "name":"Burger",
+                      "price":15.00
+                   },
+                   {
+                      "name":"Large Salad",
+                      "price":8.00
+                   }
+                ]
+             }
+          ]
+       },
+       {
+          "name":"Casa del Poppo",
+          "menus":[
+             {
+                "name":"lunch",
+                "menu_items":[
+                   {
+                      "name":"Chicken Wings",
+                      "price":9.00
+                   },
+                   {
+                      "name":"Burger",
+                      "price":9.00
+                   },
+                   {
+                      "name":"Chicken Wings",
+                      "price":9.00
+                   }
+                ]
+             },
+             {
+                "name":"dinner",
+                "menu_items":[
+                   {
+                      "name":"Mega \"Burger\"",
+                      "price":22.00
+                   },
+                   {
+                      "name":"Lobster Mac & Cheese",
+                      "price":31.00
+                   }
+                ]
+             }
+          ]
+       }
+    ]
+ }
+  ```
 
 2. **Run the Import Command**: You can execute the conversion tool by sending a `POST` request to the import endpoint. 
     Here’s how to do it:
