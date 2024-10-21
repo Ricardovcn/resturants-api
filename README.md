@@ -53,12 +53,17 @@ The modifications for the third part of the code challenge have been implemented
 A pull request has been created based on the second part to facilitate the review process.
 - **Branch**: [level_3_final](https://github.com/Ricardovcn/resturants-api/pull/2)
 
-- **Changed Endpoints**: The menu items endpoints have been reorganized into a nested structure under restaurants.
+- **Changed Endpoints**: 
+
+The menu items endpoints have been reorganized into a nested structure under restaurants.
   - `GET /api/v1/restaurant/menu_items`
   - `POST /api/v1/restaurants/menu_items`
   - `GET /api/v1/restaurants/menu_items/:id`
   - `PUT /api/v1/restaurants/menu_items/:id`
   - `DELETE /api/v1/restaurants/menu_items/:id`
+
+Implemented pagination to the get restaurants endpoint.
+  - `GET /api/v1/restaurants?page=1`
 
 - **Created Endpoint**:
   - `POST /api/v1/restaurants/import`
