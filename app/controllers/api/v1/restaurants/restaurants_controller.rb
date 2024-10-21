@@ -8,7 +8,7 @@ class Api::V1::Restaurants::RestaurantsController < ApplicationController
   ].freeze
   
   def index
-    render json: Restaurant.page(params["page"]), include: :menus
+    render json: Restaurant.page(params["page"]).per(params["per_page"]), include: :menus
   end
 
   def show
