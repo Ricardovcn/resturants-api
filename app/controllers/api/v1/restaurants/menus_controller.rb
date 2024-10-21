@@ -10,7 +10,7 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   ].freeze
   
   def index
-    render json: @restaurant.menus
+    render json: @restaurant.menus, include: :menu_items
   end
 
   def show
