@@ -10,7 +10,7 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   ].freeze
   
   def index
-    render json: Menu.where(restaurant_id: @restaurant.id)
+    render json: @restaurant.menus, include: :menu_items
   end
 
   def show
@@ -54,16 +54,16 @@ class Api::V1::Restaurants::MenusController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:name, :description, :is_acive, :restaurant_id)
+    params.permit(:name, :description, :is_active, :restaurant_id)
   end
 
   def set_menu
     @menu =  @restaurant.menus.find_by_id(params['id'])
-    render_error("Invalid menu id!", :not_found) if @menu.nil?
+    render_error("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.", :not_found) if @menu.nil?
   end
 
   def set_restaurant   
     @restaurant = Restaurant.find_by_id(params['restaurant_id'])
-    render_error("Invalid restaurant id!", :not_found) if @restaurant.nil?
+    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.", :not_found) if @restaurant.nil?
   end
 end

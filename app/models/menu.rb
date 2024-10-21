@@ -6,8 +6,9 @@ class Menu < ApplicationRecord
 
   before_destroy :remove_menu_item_associations
 
-  validates :name, presence: true, uniqueness: { scope: :restaurant_id }, length: { maximum: 100 }
-  validates :description, length: { maximum: 500 }, allow_blank: true
+  validates :name, presence: true, length: { maximum: 100 }
+  validates :description, length: { maximum: 500 }, format: { without: /\A\s*\z/, message: "must contain non-whitespace characters" }, allow_nil: true
+  validates :is_active, inclusion: { in: [true, false], message: "must be true or false" }, allow_nil: false
 
   private 
 

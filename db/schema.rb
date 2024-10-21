@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_17_160145) do
+ActiveRecord::Schema.define(version: 2024_10_20_121930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,9 @@ ActiveRecord::Schema.define(version: 2024_10_17_160145) do
     t.boolean "is_available", default: true
     t.integer "calories"
     t.string "allergens", default: [], array: true
-    t.index ["name"], name: "index_menu_items_on_name", unique: true
+    t.bigint "restaurant_id"
+    t.index ["restaurant_id", "name"], name: "index_menu_items_on_restaurant_id_and_name", unique: true
+    t.index ["restaurant_id"], name: "index_menu_items_on_restaurant_id"
   end
 
   create_table "menus", force: :cascade do |t|
@@ -44,7 +46,7 @@ ActiveRecord::Schema.define(version: 2024_10_17_160145) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "description"
-    t.boolean "is_acive", default: true
+    t.boolean "is_active", default: true
     t.bigint "restaurant_id", null: false
     t.index ["restaurant_id"], name: "index_menus_on_restaurant_id"
   end
@@ -60,5 +62,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_160145) do
 
   add_foreign_key "menu_item_menus", "menu_items"
   add_foreign_key "menu_item_menus", "menus"
+  add_foreign_key "menu_items", "restaurants"
   add_foreign_key "menus", "restaurants"
 end

@@ -1,6 +1,6 @@
 class Api::V1::Restaurants::MenuItemMenusController < ApplicationController
-  before_action :set_restaurant, :set_menu
   before_action :required_params, only: [:create]
+  before_action :set_restaurant, :set_menu, :set_menu_item
   before_action :set_menu_item_menu, only: [:destroy]
 
   REQUIRED_PARAMS = [
@@ -37,16 +37,21 @@ class Api::V1::Restaurants::MenuItemMenusController < ApplicationController
 
   def set_menu_item_menu
     @menu_item_menu = @menu.menu_item_menus.find_by(menu_item_id: params["menu_item_id"])
-    render_error("Invalid ID's!", :not_found) if @menu_item_menu.nil?
+    render_error("Menu or Menu Item not found for the given restaurant. Please check the IDs.", :not_found) if @menu_item_menu.nil?
+  end
+
+  def set_menu_item
+    @menu_item =  @restaurant.menu_items.find_by_id(params['menu_item_id'])
+    render_error("Menu item not found for the given restaurant. Please check the menu item and restaurant IDs.", :not_found) if @menu_item.nil?
   end
 
   def set_menu
     @menu =  @restaurant.menus.find_by_id(params['menu_id'])
-    render_error("Invalid menu id!", :not_found) if @menu.nil?
+    render_error("Menu ID not found for the given restaurant. Please verify the menu and restaurant IDs.", :not_found) if @menu.nil?
   end
 
   def set_restaurant   
     @restaurant = Restaurant.find_by_id(params['restaurant_id'])
-    render_error("Invalid restaurant id!", :not_found) if @restaurant.nil?
+    render_error("Restaurant ID not found. Please check that the restaurant exists in the system.", :not_found) if @restaurant.nil?
   end
 end
